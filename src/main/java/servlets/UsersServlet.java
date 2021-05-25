@@ -1,8 +1,10 @@
 package servlets;
 
+import com.google.gson.Gson;
 import database.DataBaseConnectionException;
 import modelconnectors.UserDatabaseConnector;
-import com.google.gson.Gson;
+import models.User;
+import models.error.ErrorMessage;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,11 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import models.error.*;
-
-import models.User;
 
 @WebServlet(name="users", urlPatterns = "/user")
 public class UsersServlet extends HttpServlet implements Servlet {
@@ -31,6 +29,11 @@ public class UsersServlet extends HttpServlet implements Servlet {
             }
             try {
                 User user = repos.get(Integer.parseInt(id));
+                if (user == null) {
+                    sendError(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                            "Пользователь с данным ID не найден"), resp);
+                    return;
+                }
                 sendObject(user, resp);
             } catch (DataBaseConnectionException e) {
                 sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,

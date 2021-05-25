@@ -3,14 +3,14 @@ package modelconnectors;
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
-import models.ModelObject;
+import models.AbstactModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseDatabaseConnector<T extends ModelObject> implements DatabaseConnector<T> {
+public abstract class BaseDatabaseConnector<T extends AbstactModel> implements DatabaseConnector<T> {
     protected final DataBase db = PostgresDataBase.getInstance();
 
     @Override

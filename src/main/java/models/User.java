@@ -4,7 +4,7 @@ import modelconnectors.SexDatabaseConnector;
 
 import java.time.LocalDate;
 
-public class User extends ModelObject {
+public class User extends AbstactModel {
     private final long id;
     private final String firstname;
     private final String surname;

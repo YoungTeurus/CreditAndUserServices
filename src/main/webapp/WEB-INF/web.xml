@@ -6,13 +6,9 @@
 
     <display-name>Test</display-name>
 
-    <servlet>
-        <servlet-name>databaseServlet</servlet-name>
-        <servlet-class>servlets.DataBaseServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>databaseServlet</servlet-name>
-        <url-pattern>/test</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>users</servlet-name>-->
+<!--        <url-pattern>/main</url-pattern>-->
+<!--    </servlet-mapping>-->
 
 </web-app>
