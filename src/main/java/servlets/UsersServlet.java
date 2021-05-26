@@ -19,15 +19,26 @@ public class UsersServlet extends HttpServlet implements Servlet {
     private final UserDatabaseConnector repos = UserDatabaseConnector.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String id = req.getParameter("id");
+        String remove = req.getParameter("remove");
         try {
             if (id == null) {
-                sendError(new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST,
-                        "Вы не указали id пользователя в запросе"), resp);
+                sendObject(repos.getAll(), resp);
                 return;
             }
             try {
+                if (remove != null && remove.equals("true")) {
+                    boolean result = repos.removeAndReturnSuccess(Long.parseLong(id));
+                    if (result) {
+                        sendError(new ErrorMessage(HttpServletResponse.SC_OK,
+                                "Пользователь с id = " + id + " успешно удален."), resp);
+                    } else {
+                        sendError(new ErrorMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                                "Произошла ошибка при удалении"), resp);
+                    }
+                    return;
+                }
                 User user = repos.get(Integer.parseInt(id));
                 if (user == null) {
                     sendError(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
@@ -44,6 +55,12 @@ public class UsersServlet extends HttpServlet implements Servlet {
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (SQLException throwables) {
+            sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Ошибка в SQL запросе"), resp);
+        } catch (DataBaseConnectionException e) {
+            sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Не удалось подключиться к базе данных"), resp);
         }
     }
     @Override
@@ -51,9 +68,9 @@ public class UsersServlet extends HttpServlet implements Servlet {
         request.setCharacterEncoding("UTF-8");
         User user = new Gson().fromJson(request.getReader(), User.class);
         try {
-            repos.addAndReturnId(user);
+            long id = repos.addAndReturnId(user);
             sendError(new ErrorMessage(HttpServletResponse.SC_OK,
-                    "Пользователь успешно добавлен"), response);
+                    "Пользователь успешно добавлен с id = " + id), response);
         } catch (SQLException e) {
             sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
                     "Ошибка в SQL запросе"), response);
