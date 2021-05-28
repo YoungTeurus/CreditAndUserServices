@@ -3,11 +3,16 @@ package modelconnectors;
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
+import database.constructor.BaseParameter;
+import database.constructor.StatementConstructor;
 import models.AbstactModel;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseDatabaseConnector<T extends AbstactModel> implements DatabaseConnector<T> {
@@ -27,6 +32,21 @@ public abstract class BaseDatabaseConnector<T extends AbstactModel> implements D
 
     protected abstract T constructObjectFromResultSet(ResultSet rs);
 
+    // TODO: метод, который производит поиск по БД-шке по заданным полям
+    public final List<T> find() throws SQLException, DataBaseConnectionException{
+        return Collections.emptyList();
+    }
+
+    private ResultSet getResultSetOfFoundObjects(List<BaseParameter> parameters) throws SQLException, DataBaseConnectionException{
+        Connection connection = db.getConnection();
+
+        String sql = StatementConstructor.constructSelectSQLQuery("test", parameters);
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        // preparedStatement.setLong(1, id);
+
+        return db.executeStatement(preparedStatement);
+    }
 
     @Override
     public final List<T> getAll() throws SQLException, DataBaseConnectionException {

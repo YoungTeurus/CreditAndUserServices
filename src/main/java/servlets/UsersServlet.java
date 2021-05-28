@@ -13,56 +13,86 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 @WebServlet(name="users", urlPatterns = "/user")
-public class UsersServlet extends HttpServlet implements Servlet {
+public class UsersServlet extends BaseServlet {
     private final UserDatabaseConnector repos = UserDatabaseConnector.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String id = req.getParameter("id");
-        String remove = req.getParameter("remove");
+    protected Object processParameters() {
+        String id = getRequestParameterValue("id");
+        String remove = getRequestParameterValue("remove");
+        String passport = getRequestParameterValue("passport");
+        Object result;
+        if (remove != null && remove.equals("true")) {
+            result = handleRemove(id);
+        } else if (passport != null) {
+            result = handlePassport(passport);
+        } else {
+            result = handleId(id);
+        }
+        return result;
+    }
+
+    private Object handleId(String id) {
         try {
             if (id == null) {
-                sendObject(repos.getAll(), resp);
-                return;
-            }
-            try {
-                if (remove != null && remove.equals("true")) {
-                    boolean result = repos.removeAndReturnSuccess(Long.parseLong(id));
-                    if (result) {
-                        sendError(new ErrorMessage(HttpServletResponse.SC_OK,
-                                "Пользователь с id = " + id + " успешно удален."), resp);
-                    } else {
-                        sendError(new ErrorMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                                "Произошла ошибка при удалении"), resp);
-                    }
-                    return;
-                }
+                return repos.getAll();
+            } else {
                 User user = repos.get(Integer.parseInt(id));
                 if (user == null) {
-                    sendError(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                            "Пользователь с данным ID не найден"), resp);
-                    return;
+                    return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                            "Пользователь с данным ID не найден");
                 }
-                sendObject(user, resp);
-            } catch (DataBaseConnectionException e) {
-                sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                        "Не удалось подключиться к базе данных"), resp);
-            } catch (SQLException e) {
-                sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                        "Ошибка в SQL запросе"), resp);
+                return user;
             }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
         } catch (SQLException throwables) {
-            sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                    "Ошибка в SQL запросе"), resp);
+            return new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Ошибка в SQL запросе");
         } catch (DataBaseConnectionException e) {
-            sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                    "Не удалось подключиться к базе данных"), resp);
+            return new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Не удалось подключиться к базе данных");
         }
     }
+
+    private Object handleRemove(String id) {
+        try {
+            boolean result = repos.removeAndReturnSuccess(Long.parseLong(id));
+            if (result) {
+                return new ErrorMessage(HttpServletResponse.SC_OK,
+                        "Пользователь с id = " + id + " успешно удален.");
+            } else {
+                return new ErrorMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Произошла ошибка при удалении пользователя");
+            }
+        } catch (SQLException throwables) {
+            return new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Ошибка в SQL запросе");
+        } catch (DataBaseConnectionException e) {
+            return new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Не удалось подключиться к базе данных");
+        }
+    }
+
+    private Object handlePassport(String passport) {
+        try {
+            User user = repos.getByPassportID(passport);
+            if (user == null) {
+                return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                        "Пользователь с данными паспортными данными не найден.");
+            } else {
+                return user;
+            }
+        } catch (SQLException throwables) {
+            return new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Ошибка в SQL запросе");
+        } catch (DataBaseConnectionException e) {
+            return new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "Не удалось подключиться к базе данных");
+        }
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");

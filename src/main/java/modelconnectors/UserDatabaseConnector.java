@@ -73,16 +73,6 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         Connection connection = db.getConnection();
 
         String sql = "SELECT * FROM public.\"users\";";
-        // String sql = "SELECT" +
-        //                " birth_date," +
-        //                " firstname," +
-        //                " users.id as \"id\"," +
-        //                " passport_number," +
-        //                " s.name as \"sex_name\"," +
-        //                " surname," +
-        //                " tax_payer_id," +
-        //                " driver_licence_id" +
-        //                " FROM public.\"users\" JOIN public.\"sexes\" s on s.id = public.\"users\".sex_id;";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         return db.executeStatement(preparedStatement);
     }
@@ -98,7 +88,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
             User user = new User.Builder(rs.getString("firstname"))
                     .id(rs.getInt("id"))
-                    .birthDate(convertDateToLocalDate(rs.getDate("birth_date")))
+                    .birthDate(rs.getDate("birth_date").toLocalDate())
                     .passportNumber(rs.getString("passport_number"))
                     .sex(usersSex)
                     .surname(rs.getString("surname"))
@@ -120,10 +110,5 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
             // TODO: что делать, если не смогли получить пол?
         }
         return returnSex;
-    }
-
-
-    private LocalDate convertDateToLocalDate(Date dateToConvert) {
-        return dateToConvert.toLocalDate();
     }
 }
