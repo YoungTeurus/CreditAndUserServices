@@ -3,7 +3,7 @@ package database.constructor;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public abstract class BaseParameter<T> implements Parameter {
+public abstract class BaseParameter<T> {
     private String parameter;
     protected T value;
 
@@ -17,12 +17,4 @@ public abstract class BaseParameter<T> implements Parameter {
     }
 
     public abstract void applyParameter(PreparedStatement ps, int applyIndex) throws SQLException;
-
-    @Override
-    public String toString() {
-        return "BaseParameter{" +
-                "parameter='" + parameter + '\'' +
-                ", value=" + value +
-                '}';
-    }
 }

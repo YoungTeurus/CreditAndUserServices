@@ -1,7 +1,6 @@
 package database;
 
 import config.Config;
-import config.DBCredentials;
 
 import java.sql.*;
 
@@ -57,9 +56,7 @@ public class PostgresDataBase implements DataBase {
 
     public static PostgresDataBase getInstance() {
         if (instance == null) {
-            DBCredentials credentials = Config.getCredentials();
-            assert credentials != null;
-            instance = new PostgresDataBase(credentials.getHost(), credentials.getUser(), credentials.getPass());
+            instance = new PostgresDataBase(Config.getDBHost(), Config.getDBLogin(), Config.getDBPass());
         }
         return instance;
     }
