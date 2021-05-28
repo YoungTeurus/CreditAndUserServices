@@ -3,7 +3,7 @@ package database.constructor;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public abstract class BaseParameter<T> {
+public abstract class BaseParameter<T> implements Parameter {
     private String parameter;
     protected T value;
 
