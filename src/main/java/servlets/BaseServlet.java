@@ -22,7 +22,7 @@ public abstract class BaseServlet extends HttpServlet implements Servlet {
 
     protected abstract Object processParameters();
 
-    private void sendAnswer(Object answer, HttpServletResponse resp){
+    private void sendAnswer(Object answer, HttpServletResponse resp) {
         try {
             // TODO: что делать, если попытались отправить null?
             if (answer == null){

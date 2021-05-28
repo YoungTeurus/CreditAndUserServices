@@ -1,6 +1,6 @@
 package models;
 
-public class Branch extends AbstactModel{
+public class Branch extends AbstractModel {
     private long id;
     private String name;
     private String location;

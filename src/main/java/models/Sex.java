@@ -1,6 +1,6 @@
 package models;
 
-public class Sex extends AbstactModel {
+public class Sex extends AbstractModel {
     private final long id;
     private final String name;
 

@@ -4,6 +4,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import config.Config;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
@@ -16,14 +17,12 @@ import models.error.*;
 
 @WebServlet(name="get", urlPatterns = "/get")
 public class MainServlet extends BaseServlet {
-    // TODO: в финальной версии serverURL можно задавать из коммандной строки.
-    private final String serverURL = "http://localhost:8080/main";
 
     @Override
     protected Object processParameters() {
         String passport = getRequestParameterValue("passport");
         if (passport != null) {
-            String json = connectAndGet(serverURL + "/user?passport=" + passport);
+            String json = connectAndGet(Config.getUsersURL() + "?passport=" + passport);
             User user = new Gson().fromJson(json, User.class);
             if (user == null) {
                 return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователя с данными паспортными данными не найдено!");

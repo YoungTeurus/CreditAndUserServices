@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public abstract class BaseParameter<T> {
-    private String parameter;
+    private final String parameter;
     protected T value;
 
     public BaseParameter(String parameter, T value){

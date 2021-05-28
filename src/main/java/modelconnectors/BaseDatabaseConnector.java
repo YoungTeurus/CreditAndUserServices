@@ -5,7 +5,7 @@ import database.DataBaseConnectionException;
 import database.PostgresDataBase;
 import database.constructor.BaseParameter;
 import database.constructor.StatementConstructor;
-import models.AbstactModel;
+import models.AbstractModel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BaseDatabaseConnector<T extends AbstactModel> implements DatabaseConnector<T> {
+public abstract class BaseDatabaseConnector<T extends AbstractModel> implements DatabaseConnector<T> {
     protected final DataBase db = PostgresDataBase.getInstance();
 
     @Override

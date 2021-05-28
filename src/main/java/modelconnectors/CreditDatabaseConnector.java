@@ -40,14 +40,14 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
         // id, userId, totalSum, startPaymentDate, endPaymentDate, branchId
         Credit returnCredit = null;
         try {
-            returnCredit = new Credit(
-                    rs.getLong("id"),
-                    rs.getLong("userId"),
-                    rs.getLong("branchId"),
-                    rs.getDouble("totalSum"),
-                    rs.getDate("startPaymentDate").toLocalDate(),
-                    rs.getDate("endPaymentDate").toLocalDate()
-            );
+            returnCredit = new Credit.Builder()
+                    .id(rs.getLong("id"))
+                    .userId(rs.getLong("userId"))
+                    .branchId(rs.getLong("branchId"))
+                    .totalSum(rs.getDouble("totalSum"))
+                    .startPaymentDate(rs.getDate("startPaymentDate").toLocalDate())
+                    .endPaymentDate(rs.getDate("endPaymentDate").toLocalDate())
+                    .build();
         } catch (SQLException e) {
             // TODO: решить, как обрабатывать ошибку при невозможности создать sex из полученных данных.
             // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
