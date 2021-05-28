@@ -1,11 +1,19 @@
 package modelconnectors;
 
 import database.DataBaseConnectionException;
+import database.constructor.*;
 import models.Credit;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
+    @Override
+    protected String getTableName() {
+        return "credits";
+    }
+
     private static CreditDatabaseConnector instance;
 
     public static CreditDatabaseConnector getInstance() {
@@ -13,25 +21,6 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
             instance = new CreditDatabaseConnector();
         }
         return instance;
-    }
-
-    @Override
-    protected ResultSet getResultSetOfObjectOfId(long id) throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"credits\" WHERE id = ?;";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setLong(1, id);
-        return db.executeStatement(preparedStatement);
-    }
-
-    @Override
-    protected ResultSet getResultSetOfAllObjects() throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"credits\";";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        return db.executeStatement(preparedStatement);
     }
 
     @Override
@@ -56,19 +45,16 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
     }
 
     @Override
-    protected ResultSet getResultSetOfAddedObjectId(Credit credit) throws SQLException, DataBaseConnectionException {
-        String sql = "INSERT INTO public.\"credits\" (\"userId\", \"totalSum\", \"startPaymentDate\", \"endPaymentDate\", \"branchId\")" +
-                " Values (?, ?, ?, ?, ?) RETURNING id;";
-        Connection connection = db.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    protected List<Parameter> getParametersForInsert(Credit credit) {
+        List<Parameter> params = new ArrayList<>();
 
-        preparedStatement.setLong(1, credit.getUserId());
-        preparedStatement.setDouble(2, credit.getTotalSum());
-        preparedStatement.setDate(3, Date.valueOf(credit.getStartPaymentDate()));
-        preparedStatement.setDate(4, Date.valueOf(credit.getEndPaymentDate()));
-        preparedStatement.setLong(5, credit.getBranchId());
+        params.add(new LongParameter("userId", credit.getUserId()));
+        params.add(new DoubleParameter("totalSum", credit.getTotalSum()));
+        params.add(new DateParameter("startPaymentDate", Date.valueOf(credit.getStartPaymentDate())));
+        params.add(new DateParameter("endPaymentDate", Date.valueOf(credit.getEndPaymentDate())));
+        params.add(new LongParameter("branchId", credit.getBranchId()));
 
-        return db.executeStatement(preparedStatement);
+        return params;
     }
 
     @Override

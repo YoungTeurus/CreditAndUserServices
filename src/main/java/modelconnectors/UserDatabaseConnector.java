@@ -1,14 +1,20 @@
 package modelconnectors;
 
 import database.DataBaseConnectionException;
+import database.constructor.*;
 import models.Sex;
 import models.User;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
+    @Override
+    protected String getTableName() {
+        return "users";
+    }
+
     private final SexDatabaseConnector sexDatabaseConnector = SexDatabaseConnector.getInstance();
     private static UserDatabaseConnector instance;
 
@@ -20,22 +26,18 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     }
 
     @Override
-    protected final ResultSet getResultSetOfAddedObjectId(User user) throws DataBaseConnectionException, SQLException {
-        String sql = "INSERT INTO public.\"users\" (firstname, surname, birth_date, sex_id, passport_number, tax_payer_id, driver_licence_id)" +
-                " Values (?, ?, ?, ?, ?, ?, ?) RETURNING id;";
-        Connection connection = db.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    protected List<Parameter> getParametersForInsert(User user) {
+        List<Parameter> params = new ArrayList<>();
 
+        params.add(new StringParameter("firstname", user.getFirstname()));
+        params.add(new StringParameter("surname", user.getSurname()));
+        params.add(new DateParameter("birth_date", Date.valueOf(user.getBirthDate())));
+        params.add(new LongParameter("sex_id", user.getSex().getId()));
+        params.add(new StringParameter("passport_number", user.getPassportNumber()));
+        params.add(new StringParameter("tax_payer_id", user.getTaxPayerID()));
+        params.add(new StringParameter("driver_licence_id", user.getDriverLicenceId()));
 
-        preparedStatement.setString(1, user.getFirstname());
-        preparedStatement.setString(2, user.getSurname());
-        preparedStatement.setDate(3, Date.valueOf(user.getBirthDate()));
-        preparedStatement.setLong(4, user.getSex().getId());
-        preparedStatement.setString(5, user.getPassportNumber());
-        preparedStatement.setString(6, user.getTaxPayerID());
-        preparedStatement.setString(7, user.getDriverLicenceId());
-
-        return db.executeStatement(preparedStatement);
+        return params;
     }
 
     @Override
@@ -47,35 +49,6 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
         return db.executeStatement(preparedStatement);
     }
-
-    @Override
-    protected ResultSet getResultSetOfObjectOfId(long id) throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"users\" WHERE id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setLong(1, id);
-        return db.executeStatement(preparedStatement);
-    }
-
-    private ResultSet getResultSetOfObjectWithPassportId(String passportID) throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"users\" WHERE passport_number = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, passportID);
-        return db.executeStatement(preparedStatement);
-    }
-
-    @Override
-    protected ResultSet getResultSetOfAllObjects() throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"users\";";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        return db.executeStatement(preparedStatement);
-    }
-
     @Override
     protected User constructObjectFromResultSet(ResultSet rs) {
         // Оторванность sql запроса и разбирания результа запроса для создания объекта напрягает.
@@ -103,10 +76,13 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
 
     public final User getByPassportID(String passport) throws SQLException, DataBaseConnectionException  {
-        ResultSet resultSet = getResultSetOfObjectWithPassportId(passport);
+        List<Parameter> params = new ArrayList<>();
+        params.add(new StringParameter("passport_number", passport));
 
-        if (resultSet.next()) {
-            return constructObjectFromResultSet(resultSet);
+        List<User> foundUsers = getByParameters(params);
+
+        if (foundUsers.size() > 0) {
+            return foundUsers.get(0);
         }
         return null;
     }
@@ -114,7 +90,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     private Sex getSexById(int id){
         Sex returnSex = null;
         try {
-            returnSex = sexDatabaseConnector.get(id);
+            returnSex = sexDatabaseConnector.getById(id);
         } catch (SQLException | DataBaseConnectionException e){
             // TODO: что делать, если не смогли получить пол?
         }

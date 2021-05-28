@@ -3,7 +3,8 @@ package modelconnectors;
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
-import database.constructor.BaseParameter;
+import database.constructor.LongParameter;
+import database.constructor.Parameter;
 import database.constructor.StatementConstructor;
 import models.AbstactModel;
 
@@ -18,39 +19,10 @@ import java.util.List;
 public abstract class BaseDatabaseConnector<T extends AbstactModel> implements DatabaseConnector<T> {
     protected final DataBase db = PostgresDataBase.getInstance();
 
-    @Override
-    public final T get(long id) throws SQLException, DataBaseConnectionException {
-        ResultSet resultSet = getResultSetOfObjectOfId(id);
+    protected abstract String getTableName();
 
-        if (resultSet.next()) {
-            return constructObjectFromResultSet(resultSet);
-        }
-        return null;
-    }
-
-    protected abstract ResultSet getResultSetOfObjectOfId(long id) throws SQLException, DataBaseConnectionException;
-
-    protected abstract T constructObjectFromResultSet(ResultSet rs);
-
-    // TODO: метод, который производит поиск по БД-шке по заданным полям
-    public final List<T> find() throws SQLException, DataBaseConnectionException{
-        return Collections.emptyList();
-    }
-
-    private ResultSet getResultSetOfFoundObjects(List<BaseParameter> parameters) throws SQLException, DataBaseConnectionException{
-        Connection connection = db.getConnection();
-
-        String sql = StatementConstructor.constructSelectSQLQuery("test", parameters);
-
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        // preparedStatement.setLong(1, id);
-
-        return db.executeStatement(preparedStatement);
-    }
-
-    @Override
-    public final List<T> getAll() throws SQLException, DataBaseConnectionException {
-        ResultSet resultSet = getResultSetOfAllObjects();
+    public List<T> getByParameters(List<Parameter> parameters) throws SQLException, DataBaseConnectionException{
+        ResultSet resultSet = getResultSetOfFoundObjectsByParameters(parameters);
 
         List<T> objects = new ArrayList<>();
         while (resultSet.next()) {
@@ -59,8 +31,37 @@ public abstract class BaseDatabaseConnector<T extends AbstactModel> implements D
         return objects;
     }
 
-    protected abstract ResultSet getResultSetOfAllObjects() throws SQLException, DataBaseConnectionException;
+    private ResultSet getResultSetOfFoundObjectsByParameters(List<Parameter> parameters) throws SQLException, DataBaseConnectionException{
+        Connection connection = db.getConnection();
 
+        PreparedStatement preparedStatement = StatementConstructor.constructSelectStatementFromParametersList(
+                connection, getTableName(), parameters
+        );
+
+        return db.executeStatement(preparedStatement);
+    }
+
+    protected abstract T constructObjectFromResultSet(ResultSet rs);
+
+    @Override
+    public final T getById(long id) throws SQLException, DataBaseConnectionException {
+        List<Parameter> params = new ArrayList<>();
+        params.add(new LongParameter("id", id));
+
+        List<T> objects = getByParameters(params);
+        if(objects.size() > 0){
+            return objects.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public final List<T> getAll() throws SQLException, DataBaseConnectionException {
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        List<T> objects = getByParameters(Collections.emptyList());
+
+        return objects;
+    }
 
     @Override
     public final long addAndReturnId(T object) throws SQLException, DataBaseConnectionException {
@@ -73,8 +74,19 @@ public abstract class BaseDatabaseConnector<T extends AbstactModel> implements D
         return -1;
     }
 
-    protected abstract ResultSet getResultSetOfAddedObjectId(T object) throws SQLException, DataBaseConnectionException;
+    private ResultSet getResultSetOfAddedObjectId(T object) throws SQLException, DataBaseConnectionException{
+        Connection connection = db.getConnection();
 
+        List<Parameter> params = getParametersForInsert(object);
+
+        PreparedStatement ps = StatementConstructor.constructInsertStatementFromParametersList(
+                connection, getTableName(), params
+        );
+
+        return db.executeStatement(ps);
+    }
+
+    protected abstract List<Parameter> getParametersForInsert(T object);
 
     @Override
     public final boolean removeAndReturnSuccess(long id) throws SQLException, DataBaseConnectionException {

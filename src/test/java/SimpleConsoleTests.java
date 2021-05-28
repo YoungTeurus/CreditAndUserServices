@@ -73,11 +73,11 @@ class SimpleConsoleTests {
         System.out.printf("Added user with ID %d\n", addedId);
 
         // Заменяем default id = 0 на реальный.
-        u = udc.get(addedId);
+        u = udc.getById(addedId);
         assertNotNull(u);
 
         boolean isSuccess = udc.removeAndReturnSuccess(u);
         assertTrue(isSuccess);
-        assertNull(udc.get(addedId));
+        assertNull(udc.getById(addedId));
     }
 }

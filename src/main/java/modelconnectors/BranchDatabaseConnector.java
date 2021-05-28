@@ -1,15 +1,23 @@
 package modelconnectors;
 
 import database.DataBaseConnectionException;
+import database.constructor.DateParameter;
+import database.constructor.LongParameter;
+import database.constructor.Parameter;
+import database.constructor.StringParameter;
 import models.Branch;
 import models.Payment;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BranchDatabaseConnector extends BaseDatabaseConnector<Branch>{
+    @Override
+    protected String getTableName() {
+        return "branches";
+    }
+
     private static BranchDatabaseConnector instance;
 
     public static BranchDatabaseConnector getInstance() {
@@ -17,16 +25,6 @@ public class BranchDatabaseConnector extends BaseDatabaseConnector<Branch>{
             instance = new BranchDatabaseConnector();
         }
         return instance;
-    }
-
-    @Override
-    protected ResultSet getResultSetOfObjectOfId(long id) throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"branches\" WHERE id = ?;";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setLong(1, id);
-        return db.executeStatement(preparedStatement);
     }
 
     @Override
@@ -48,16 +46,7 @@ public class BranchDatabaseConnector extends BaseDatabaseConnector<Branch>{
     }
 
     @Override
-    protected ResultSet getResultSetOfAllObjects() throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"branches\";";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        return db.executeStatement(preparedStatement);
-    }
-
-    @Override
-    protected ResultSet getResultSetOfAddedObjectId(Branch object) throws SQLException, DataBaseConnectionException {
+    protected List<Parameter> getParametersForInsert(Branch branch) {
         // Добавлять новые филиалы нельзя. (Временно?)
         throw new UnsupportedOperationException();
     }

@@ -10,6 +10,8 @@ public class User extends AbstactModel {
     private final String surname;
     private final LocalDate birthDate;
     private final Sex sex;
+
+    // TODO: может стоит поменять тип следующих полей на long?
     private final String passportNumber;
     private final String taxPayerID;
     private final String driverLicenceId;
@@ -28,7 +30,7 @@ public class User extends AbstactModel {
         public Builder(String firstname) {
             this.firstname = firstname;
             try {
-                this.sex = SexDatabaseConnector.getInstance().get(1);
+                this.sex = SexDatabaseConnector.getInstance().getById(1);
             } catch (Exception ignored) {
 
             }

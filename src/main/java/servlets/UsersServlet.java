@@ -8,12 +8,10 @@ import models.error.ErrorMessage;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Map;
 
 @WebServlet(name="users", urlPatterns = "/user")
 public class UsersServlet extends BaseServlet {
@@ -40,7 +38,7 @@ public class UsersServlet extends BaseServlet {
             if (id == null) {
                 return repos.getAll();
             } else {
-                User user = repos.get(Integer.parseInt(id));
+                User user = repos.getById(Integer.parseInt(id));
                 if (user == null) {
                     return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                             "Пользователь с данным ID не найден");

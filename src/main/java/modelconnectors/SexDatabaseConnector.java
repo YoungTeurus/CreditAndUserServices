@@ -1,14 +1,19 @@
 package modelconnectors;
 
 import database.DataBaseConnectionException;
+import database.constructor.Parameter;
 import models.Sex;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
+    @Override
+    protected String getTableName() {
+        return "sexes";
+    }
+
     private static SexDatabaseConnector instance;
 
     public static SexDatabaseConnector getInstance() {
@@ -16,25 +21,6 @@ public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
             instance = new SexDatabaseConnector();
         }
         return instance;
-    }
-
-
-    protected final ResultSet getResultSetOfObjectOfId(long id) throws DataBaseConnectionException, SQLException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"sexes\" WHERE id = ?;";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setLong(1, id);
-        return db.executeStatement(preparedStatement);
-    }
-
-    @Override
-    protected ResultSet getResultSetOfAllObjects() throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-
-        String sql = "SELECT * FROM public.\"sexes\";";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        return db.executeStatement(preparedStatement);
     }
 
     @Override
@@ -55,7 +41,7 @@ public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
     }
 
     @Override
-    protected ResultSet getResultSetOfAddedObjectId(Sex object) throws SQLException, DataBaseConnectionException {
+    protected List<Parameter> getParametersForInsert(Sex object) {
         throw new UnsupportedOperationException();
     }
 

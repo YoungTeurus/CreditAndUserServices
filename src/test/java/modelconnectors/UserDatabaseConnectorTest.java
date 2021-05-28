@@ -1,0 +1,121 @@
+package modelconnectors;
+
+import database.DataBaseConnectionException;
+import database.constructor.LongParameter;
+import database.constructor.Parameter;
+import database.constructor.StringParameter;
+import models.User;
+import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class UserDatabaseConnectorTest {
+    private final Random random = new Random();
+    private final User testUser = new User.Builder("TEST_USER").driverLicenceId(String.valueOf(random.nextInt())).build();
+    private final UserDatabaseConnector udb = UserDatabaseConnector.getInstance();
+
+    @Test
+    void getById() throws SQLException, DataBaseConnectionException {
+        User users = udb.getById(1);
+        System.out.println(users);
+    }
+
+    @Test
+    void getAll() throws SQLException, DataBaseConnectionException {
+        List<User> users = udb.getAll();
+        System.out.println(users);
+    }
+
+    @Test
+    void add() throws SQLException, DataBaseConnectionException {
+        String addedDriverLicenceId = testUser.getDriverLicenceId();
+
+        long addedId = udb.addAndReturnId(testUser);
+        System.out.println("Added user with ID =" + addedId);
+
+        User addedUser = udb.getById(addedId);
+        assertNotNull(addedUser);
+        System.out.println("addedUser: " + addedUser);
+        assertEquals(addedDriverLicenceId, addedUser.getDriverLicenceId());
+    }
+
+    @Test
+    void getByParameters(){
+        List<User> users = getByFirstname("TEST_USER");
+        System.out.println("Найдено " + users.size() + " TEST_USER-ов.");
+        System.out.println(users);
+
+        users = getBySurname("Petrovich");
+        System.out.println("Найдено " + users.size() + " Petrovich-ей.");
+        System.out.println(users);
+
+        users = getByFirstnameAndSurnameAndId("Adam", "Petrovich", 2);
+        System.out.println("Найдено " + users.size() + " Adam-ов Petrovich-ей c id=2.");
+        System.out.println(users);
+    }
+
+    private List<User> getByFirstname(String firstname){
+        // Составляю список параметров, по которым делать выборку:
+        List<Parameter> params = new ArrayList<>();
+        params.add(new StringParameter("firstname", firstname));
+
+        List<User> users;
+
+        try {
+            // Получаю список пользователей по параметру:
+            users = udb.getByParameters(params);
+
+        } catch (SQLException | DataBaseConnectionException e) {
+            e.printStackTrace();
+            users = Collections.emptyList();
+        }
+
+        return users;
+    }
+
+    private List<User> getBySurname(String surname){
+        // Составляю список параметров, по которым делать выборку:
+        List<Parameter> params = new ArrayList<>();
+        params.add(new StringParameter("surname", surname));
+
+        List<User> users;
+
+        try {
+            // Получаю список пользователей по параметру:
+            users = udb.getByParameters(params);
+
+        } catch (SQLException | DataBaseConnectionException e) {
+            e.printStackTrace();
+            users = Collections.emptyList();
+        }
+
+        return users;
+    }
+
+    private List<User> getByFirstnameAndSurnameAndId(String firstname, String surname, long id){
+// Составляю список параметров, по которым делать выборку:
+        List<Parameter> params = new ArrayList<>();
+        params.add(new StringParameter("firstname", firstname));
+        params.add(new StringParameter("surname", surname));
+        params.add(new LongParameter("id", id));
+
+        List<User> users;
+
+        try {
+            // Получаю список пользователей по параметру:
+            users = udb.getByParameters(params);
+
+        } catch (SQLException | DataBaseConnectionException e) {
+            e.printStackTrace();
+            users = Collections.emptyList();
+        }
+
+        return users;
+    }
+}
