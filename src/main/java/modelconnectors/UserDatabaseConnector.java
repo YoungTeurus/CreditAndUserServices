@@ -53,18 +53,17 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         Connection connection = db.getConnection();
 
         String sql = "SELECT * FROM public.\"users\" WHERE id = ?";
-        // String sql = "SELECT" +
-        //                " birth_date," +
-        //                " firstname," +
-        //                " users.id as \"id\"," +
-        //                " passport_number," +
-        //                " s.name as \"sex_name\"," +
-        //                " surname," +
-        //                " tax_payer_id," +
-        //                " driver_licence_id" +
-        //                " FROM public.\"users\" JOIN public.\"sexes\" s on s.id = public.\"users\".sex_id WHERE users.id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setLong(1, id);
+        return db.executeStatement(preparedStatement);
+    }
+
+    private ResultSet getResultSetOfObjectWithPassportId(String passportID) throws SQLException, DataBaseConnectionException {
+        Connection connection = db.getConnection();
+
+        String sql = "SELECT * FROM public.\"users\" WHERE passport_number = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, passportID);
         return db.executeStatement(preparedStatement);
     }
 
@@ -100,6 +99,16 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
             // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
             return null;
         }
+    }
+
+
+    public final User getByPassportID(String passport) throws SQLException, DataBaseConnectionException  {
+        ResultSet resultSet = getResultSetOfObjectWithPassportId(passport);
+
+        if (resultSet.next()) {
+            return constructObjectFromResultSet(resultSet);
+        }
+        return null;
     }
 
     private Sex getSexById(int id){
