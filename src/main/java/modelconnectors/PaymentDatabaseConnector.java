@@ -3,6 +3,7 @@ package modelconnectors;
 import database.DataBaseConnectionException;
 import database.constructor.*;
 import models.Payment;
+import models.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -51,6 +52,15 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment>{
         params.add(new DateParameter("date", Date.valueOf(payment.getDate())));
 
         return params;
+    }
+
+    public List<Payment> getByCreditId(int creditId) throws SQLException, DataBaseConnectionException {
+        List<Parameter> params = new ArrayList<>();
+        params.add(new LongParameter("creditId", creditId));
+
+        List<Payment> foundPayments = getByParameters(params);
+
+        return foundPayments;
     }
 
     @Override

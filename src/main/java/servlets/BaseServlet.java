@@ -24,9 +24,9 @@ public abstract class BaseServlet extends HttpServlet implements Servlet {
 
     private void sendAnswer(Object answer, HttpServletResponse resp) {
         try {
-            // TODO: что делать, если попытались отправить null?
             if (answer == null){
-                throw new NotImplementedException();
+                sendError(new ErrorMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Внутренняя ошибка сервера: попытка отправить NULL-объект. Повторите попытку запроса позже."), resp);
             }
             // TODO: жуткая проверка, потом убрать.
             //  Засунуть проверку на тип в sendObject?
@@ -36,7 +36,7 @@ public abstract class BaseServlet extends HttpServlet implements Servlet {
                 sendObject(answer, resp);
             }
         } catch (IOException ignored){
-
+            System.out.println("BaseServlet::sendAnswer: произошла ошибка IOException при отправке ответа!");
         }
     }
 

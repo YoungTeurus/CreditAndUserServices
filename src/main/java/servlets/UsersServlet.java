@@ -33,8 +33,11 @@ public class UsersServlet extends BaseServlet {
                 result = handlePassport(passport);
             } else if (id != null) {
                 result = handleId(id);
-            } else {
+            } else if (firstname != null) {
                 result = handleFirstname(firstname);
+            } else {
+                result = new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                        "Запрос не содержал ни одного параметра.");
             }
         } catch (SQLException throwables) {
             result = new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
