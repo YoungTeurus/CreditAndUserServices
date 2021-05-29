@@ -21,16 +21,28 @@ public class MainServlet extends BaseServlet {
     @Override
     protected Object processParameters() {
         String passport = getRequestParameterValue("passport");
+        return handle(passport);
+    }
+
+    private Object handle(String passport) {
         if (passport != null) {
             String json = connectAndGet(Config.getUsersURL() + "?passport=" + passport);
             User user = new Gson().fromJson(json, User.class);
             if (user == null) {
                 return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователя с данными паспортными данными не найдено!");
             } else {
-                return user;
+                return getCreditInfoByUser(user);
             }
         }
-        return new ErrorMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Что-то пошло не так...");
+        return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST, "Укажите номер паспорта для поиска.");
+    }
+
+    private Object getCreditInfoByUser(User user) {
+        Credit credit = new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getId()), Credit.class);
+        if (credit == null) {
+            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Записей о кредитах для данного пользователя не нейдено!");
+        }
+        return credit;
     }
 
     private String connectAndGet(String path) {

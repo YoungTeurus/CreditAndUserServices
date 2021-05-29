@@ -10,8 +10,6 @@ public class User extends AbstractModel {
     private final String surname;
     private final LocalDate birthDate;
     private final Sex sex;
-
-    // TODO: может стоит поменять тип следующих полей на long?
     private final String passportNumber;
     private final String taxPayerID;
     private final String driverLicenceId;

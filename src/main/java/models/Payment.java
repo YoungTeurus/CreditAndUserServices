@@ -2,7 +2,6 @@ package models;
 
 import java.time.LocalDate;
 
-// TODO: добавить Builder-а
 public class Payment extends AbstractModel {
     private long id;
     private long creditId;

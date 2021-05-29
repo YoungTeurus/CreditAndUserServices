@@ -93,6 +93,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
             returnSex = sexDatabaseConnector.getById(id);
         } catch (SQLException | DataBaseConnectionException e){
             // TODO: что делать, если не смогли получить пол?
+            // return null?
         }
         return returnSex;
     }
