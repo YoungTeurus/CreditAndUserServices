@@ -7,9 +7,14 @@ public class Config {
 
     private static Config instance;
 
-    private String DBHost;
-    private String DBLogin;
-    private String DBPass;
+    // TODO: временное решение проблемы с БД в Config:
+    private String UserServiceDBHost;
+    private String UserServiceDBLogin;
+    private String UserServiceDBPass;
+
+    private String CreditServiceDBHost;
+    private String CreditServiceDBLogin;
+    private String CreditServiceDBPass;
 
     private String usersURL;
     private String creditsURL;
@@ -26,9 +31,13 @@ public class Config {
         try {
             property.load(new FileInputStream("src/main/resources/config.properties"));
 
-            this.DBHost = property.getProperty("db.host");
-            this.DBLogin = property.getProperty("db.user");
-            this.DBPass = property.getProperty("db.password");
+            this.UserServiceDBHost = property.getProperty("userService.db.host");
+            this.UserServiceDBLogin = property.getProperty("userService.db.user");
+            this.UserServiceDBPass = property.getProperty("userService.db.password");
+
+            this.CreditServiceDBHost = property.getProperty("creditService.db.host");
+            this.CreditServiceDBLogin = property.getProperty("creditService.db.user");
+            this.CreditServiceDBPass = property.getProperty("creditService.db.password");
 
             this.usersURL = property.getProperty("users.url");
             this.creditsURL = property.getProperty("credits.url");
@@ -44,19 +53,34 @@ public class Config {
         }
     }
 
-    public static String getDBHost() {
+    public static String getUserServiceDBHost() {
         createInstanceIfNotCreated();
-        return instance.DBHost;
+        return instance.UserServiceDBHost;
     }
 
-    public static String getDBLogin() {
+    public static String getUserServiceDBLogin() {
         createInstanceIfNotCreated();
-        return instance.DBLogin;
+        return instance.UserServiceDBLogin;
     }
 
-    public static String getDBPass() {
+    public static String getUserServiceDBPass() {
         createInstanceIfNotCreated();
-        return instance.DBPass;
+        return instance.UserServiceDBPass;
+    }
+
+    public static String getCreditServiceDBHost() {
+        createInstanceIfNotCreated();
+        return instance.CreditServiceDBHost;
+    }
+
+    public static String getCreditServiceDBLogin() {
+        createInstanceIfNotCreated();
+        return instance.CreditServiceDBLogin;
+    }
+
+    public static String getCreditServiceDBPass() {
+        createInstanceIfNotCreated();
+        return instance.CreditServiceDBPass;
     }
 
     public static String getUsersURL() {

@@ -1,6 +1,8 @@
 package modelconnectors;
 
+import database.DataBase;
 import database.DataBaseConnectionException;
+import database.PostgresDataBase;
 import database.constructor.Parameter;
 import models.Sex;
 
@@ -9,6 +11,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
+    private SexDatabaseConnector(DataBase db){
+        super(db);
+    }
+
     @Override
     protected String getTableName() {
         return "sexes";
@@ -18,7 +24,9 @@ public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
 
     public static SexDatabaseConnector getInstance() {
         if (instance == null) {
-            instance = new SexDatabaseConnector();
+            // TODO: временное решение проблемы с базами данных в SexDatabaseConnector:
+            DataBase db = PostgresDataBase.getUserServiceInstance();
+            instance = new SexDatabaseConnector(db);
         }
         return instance;
     }

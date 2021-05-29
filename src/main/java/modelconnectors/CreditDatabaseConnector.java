@@ -1,6 +1,8 @@
 package modelconnectors;
 
+import database.DataBase;
 import database.DataBaseConnectionException;
+import database.PostgresDataBase;
 import database.constructor.*;
 import models.Credit;
 
@@ -9,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
+    private CreditDatabaseConnector(DataBase db){
+        super(db);
+    }
+
     @Override
     protected String getTableName() {
         return "credits";
@@ -18,7 +24,9 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
 
     public static CreditDatabaseConnector getInstance() {
         if (instance == null) {
-            instance = new CreditDatabaseConnector();
+            // TODO: временное решение проблемы с базами данных в CreditDatabaseConnector:
+            DataBase db = PostgresDataBase.getUserServiceInstance();
+            instance = new CreditDatabaseConnector(db);
         }
         return instance;
     }

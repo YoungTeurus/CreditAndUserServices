@@ -1,6 +1,8 @@
 package modelconnectors;
 
+import database.DataBase;
 import database.DataBaseConnectionException;
+import database.PostgresDataBase;
 import database.constructor.*;
 import models.Payment;
 
@@ -9,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment>{
+    private PaymentDatabaseConnector(DataBase db){
+        super(db);
+    }
+
     @Override
     protected String getTableName() {
         return "payments";
@@ -18,7 +24,9 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment>{
 
     public static PaymentDatabaseConnector getInstance() {
         if (instance == null) {
-            instance = new PaymentDatabaseConnector();
+            // TODO: временное решение проблемы с базами данных в PaymentDatabaseConnector:
+            DataBase db = PostgresDataBase.getUserServiceInstance();
+            instance = new PaymentDatabaseConnector(db);
         }
         return instance;
     }

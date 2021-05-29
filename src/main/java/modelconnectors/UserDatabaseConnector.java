@@ -1,6 +1,8 @@
 package modelconnectors;
 
+import database.DataBase;
 import database.DataBaseConnectionException;
+import database.PostgresDataBase;
 import database.constructor.*;
 import models.Sex;
 import models.User;
@@ -10,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
+    private UserDatabaseConnector(DataBase db){
+        super(db);
+    }
+
     @Override
     protected String getTableName() {
         return "users";
@@ -20,7 +26,9 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
     public static UserDatabaseConnector getInstance() {
         if (instance == null) {
-            instance = new UserDatabaseConnector();
+            // TODO: временное решение проблемы с базами данных в UserDatabaseConnector:
+            DataBase db = PostgresDataBase.getUserServiceInstance();
+            instance = new UserDatabaseConnector(db);
         }
         return instance;
     }

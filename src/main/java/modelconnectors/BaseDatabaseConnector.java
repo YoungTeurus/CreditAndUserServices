@@ -17,7 +17,11 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseDatabaseConnector<T extends AbstractModel> implements DatabaseConnector<T> {
-    protected final DataBase db = PostgresDataBase.getInstance();
+    protected DataBase db;
+
+    BaseDatabaseConnector(DataBase db){
+        this.db = db;
+    }
 
     protected abstract String getTableName();
 

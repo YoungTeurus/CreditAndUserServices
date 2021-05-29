@@ -1,6 +1,9 @@
 package modelconnectors;
 
+import config.Config;
+import database.DataBase;
 import database.DataBaseConnectionException;
+import database.PostgresDataBase;
 import database.constructor.LongParameter;
 import database.constructor.Parameter;
 import database.constructor.StringParameter;
@@ -18,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserDatabaseConnectorTest {
     private final Random random = new Random();
     private final User testUser = new User.Builder("TEST_USER").driverLicenceId(String.valueOf(random.nextInt())).build();
+
     private final UserDatabaseConnector udb = UserDatabaseConnector.getInstance();
 
     @Test
@@ -47,16 +51,16 @@ class UserDatabaseConnectorTest {
 
     @Test
     void getByParameters(){
-        List<User> users = getByFirstname("TEST_USER");
-        System.out.println("Найдено " + users.size() + " TEST_USER-ов.");
+        List<User> users = getByFirstname("TESTUSER1");
+        System.out.println("Найдено " + users.size() + " TESTUSER1-ов.");
         System.out.println(users);
 
-        users = getBySurname("Petrovich");
-        System.out.println("Найдено " + users.size() + " Petrovich-ей.");
+        users = getBySurname("TESTUSER2");
+        System.out.println("Найдено " + users.size() + " TESTUSER2-ей.");
         System.out.println(users);
 
-        users = getByFirstnameAndSurnameAndId("Adam", "Petrovich", 2);
-        System.out.println("Найдено " + users.size() + " Adam-ов Petrovich-ей c id=2.");
+        users = getByFirstnameAndSurnameAndId("TESTUSER1", "TESTUSER1", 1);
+        System.out.println("Найдено " + users.size() + " TESTUSER1-ов TESTUSER1-ей c id=1.");
         System.out.println(users);
     }
 
