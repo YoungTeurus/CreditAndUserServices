@@ -20,10 +20,6 @@ public class UsersServlet extends BaseServlet {
 
     @Override
     protected Object processParameters() {
-        // TODO: функция добавления и удаления пользователей временно отключена
-        // String add = getRequestParameterValue("add");
-        // String remove = getRequestParameterValue("remove");
-
         String id = getRequestParameterValue("id");
 
         String firstname = getRequestParameterValue("firstname");
@@ -90,6 +86,7 @@ public class UsersServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //TODO: протестировать код добавления пользователей.
         request.setCharacterEncoding("UTF-8");
         UserServiceUser user = new Gson().fromJson(request.getReader(), UserServiceUser.class);
         try {
@@ -103,5 +100,11 @@ public class UsersServlet extends BaseServlet {
             sendError(new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
                     "Не удалось подключиться к базе данных"), response);
         }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doDelete(req, resp);
+        // TODO: реализовать удаление пользователей.
     }
 }
