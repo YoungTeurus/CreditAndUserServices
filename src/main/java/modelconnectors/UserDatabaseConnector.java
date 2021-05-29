@@ -87,6 +87,15 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return null;
     }
 
+    public final List<User> getByFirstname(String firstname) throws SQLException, DataBaseConnectionException {
+        List<Parameter> params = new ArrayList<>();
+        params.add(new StringParameter("firstname", firstname));
+
+        List<User> foundUsers = getByParameters(params);
+
+        return foundUsers;
+    }
+
     private Sex getSexById(int id){
         Sex returnSex = null;
         try {
