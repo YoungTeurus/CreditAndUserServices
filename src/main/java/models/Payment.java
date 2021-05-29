@@ -31,4 +31,14 @@ public class Payment extends AbstractModel {
     public LocalDate getDate() {
         return date;
     }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", creditId=" + creditId +
+                ", sum=" + sum +
+                ", date=" + date +
+                '}';
+    }
 }
