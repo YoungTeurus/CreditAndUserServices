@@ -29,7 +29,7 @@ public class StatementConstructor {
             sql.append(" WHERE");
             for (Parameter param : parameters) {
                 String SQLParameter = param.getParameter();
-                sql.append(" ").append(SQLParameter).append(" = ?");
+                sql.append(" \"").append(SQLParameter).append("\" = ?");
                 if (currentParameter != parametersCount - 1){
                     sql.append(" AND");
                 }
