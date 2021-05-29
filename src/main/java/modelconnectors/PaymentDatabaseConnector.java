@@ -14,11 +14,11 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment>{
         return "payments";
     }
 
-    private static CreditDatabaseConnector instance;
+    private static PaymentDatabaseConnector instance;
 
-    public static CreditDatabaseConnector getInstance() {
+    public static PaymentDatabaseConnector getInstance() {
         if (instance == null) {
-            instance = new CreditDatabaseConnector();
+            instance = new PaymentDatabaseConnector();
         }
         return instance;
     }
