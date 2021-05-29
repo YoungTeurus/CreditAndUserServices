@@ -1,15 +1,10 @@
 package modelconnectors;
 
 import database.DataBaseConnectionException;
-import database.constructor.DateParameter;
-import database.constructor.LongParameter;
 import database.constructor.Parameter;
-import database.constructor.StringParameter;
 import models.Branch;
-import models.Payment;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BranchDatabaseConnector extends BaseDatabaseConnector<Branch>{

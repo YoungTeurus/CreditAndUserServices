@@ -3,7 +3,6 @@ package modelconnectors;
 import database.DataBaseConnectionException;
 import database.constructor.*;
 import models.Credit;
-import models.User;
 
 import java.sql.*;
 import java.util.ArrayList;
