@@ -1,12 +1,15 @@
-package models;
+package services.credits.models;
 
+import models.AbstractModel;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Credit extends AbstractModel {
     private final long id;
     private final long userId;
     private final long branchId;
-    private final double totalSum;
+    private final BigDecimal totalSum;
     private final LocalDate startPaymentDate;
     private final LocalDate endPaymentDate;
 
@@ -14,7 +17,7 @@ public class Credit extends AbstractModel {
         private long id = 0;
         private long userId = 0;
         private long branchId = 0;
-        private double totalSum = 0.0;
+        private BigDecimal totalSum = new BigDecimal("0.0");
         private LocalDate startPaymentDate = LocalDate.now();
         private LocalDate endPaymentDate = LocalDate.now();
 
@@ -33,7 +36,7 @@ public class Credit extends AbstractModel {
             return this;
         }
 
-        public Builder totalSum(double totalSum) {
+        public Builder totalSum(BigDecimal totalSum) {
             this.totalSum = totalSum;
             return this;
         }
@@ -70,7 +73,7 @@ public class Credit extends AbstractModel {
         return branchId;
     }
 
-    public double getTotalSum() {
+    public BigDecimal getTotalSum() {
         return totalSum;
     }
 

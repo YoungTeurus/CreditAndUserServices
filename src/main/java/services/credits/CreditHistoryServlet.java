@@ -1,13 +1,13 @@
-package servlets;
+package services.credits;
 
 import database.DataBaseConnectionException;
-import modelconnectors.CreditDatabaseConnector;
-import modelconnectors.PaymentDatabaseConnector;
-import modelconnectors.UserDatabaseConnector;
-import models.Credit;
-import models.Payment;
-import models.User;
+import services.credits.modelconnectors.CreditDatabaseConnector;
+import services.credits.modelconnectors.PaymentDatabaseConnector;
+import services.credits.modelconnectors.UserDatabaseConnector;
+import services.credits.models.Credit;
+import services.credits.models.User;
 import models.error.ErrorMessage;
+import servlets.BaseServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(name="credits", urlPatterns = "/credit")
-public class CreditHistoryServlet extends BaseServlet{
+public class CreditHistoryServlet extends BaseServlet {
     private final UserDatabaseConnector usersRepos = UserDatabaseConnector.getInstance();
     private final CreditDatabaseConnector creditRepos = CreditDatabaseConnector.getInstance();
     private final PaymentDatabaseConnector paymentRepos = PaymentDatabaseConnector.getInstance();
@@ -32,10 +32,10 @@ public class CreditHistoryServlet extends BaseServlet{
 
         try {
             if (userId != null) {
-                boolean isOperationIllegal = checkControlValueAndUserId(userId, controlValue);
+                boolean isOperationIllegal = ! checkIfOperationLegalUsingControlValueAndUserId(userId, controlValue);
                 if (isOperationIllegal){
                     result = new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                            "Передано неверное контрольное значение. Проверьте правильность данных и повторите запрос.");
+                            "Передано неверное контрольное значение: " + controlValue + ". Проверьте правильность данных и повторите запрос.");
                 } else {
                     result = getUserCreditHistoryById(userId);
                 }
@@ -54,7 +54,7 @@ public class CreditHistoryServlet extends BaseServlet{
         return result;
     }
 
-    private boolean checkControlValueAndUserId(String userId, String controlValue){
+    private boolean checkIfOperationLegalUsingControlValueAndUserId(String userId, String controlValue){
         if (controlValue == null){
             return false;
         }
@@ -72,9 +72,11 @@ public class CreditHistoryServlet extends BaseServlet{
                     "Параметр 'userId' содержал неверные данные. Проверьте правильность данных и повторите запрос.");
         }
 
-        User user = usersRepos.getById(parsedUserId);
+        List<Credit> credits = creditRepos.getByUserId(parsedUserId);
 
-        return null;
+        // TODO: придумать, как возвращать credits + payments в одном объекте
+
+        return credits;
     }
 
     @Override

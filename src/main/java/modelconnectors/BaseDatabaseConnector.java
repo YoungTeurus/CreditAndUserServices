@@ -19,7 +19,7 @@ import java.util.List;
 public abstract class BaseDatabaseConnector<T extends AbstractModel> implements DatabaseConnector<T> {
     protected DataBase db;
 
-    BaseDatabaseConnector(DataBase db){
+    protected BaseDatabaseConnector(DataBase db){
         this.db = db;
     }
 

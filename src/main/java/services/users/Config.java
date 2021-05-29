@@ -1,4 +1,4 @@
-package config;
+package services.users;
 
 import java.io.*;
 import java.util.Properties;

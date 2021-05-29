@@ -1,16 +1,17 @@
-package modelconnectors;
+package services.credits.modelconnectors;
 
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
 import database.constructor.*;
-import models.Credit;
+import modelconnectors.BaseDatabaseConnector;
+import services.credits.models.Credit;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
+public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit> {
     private CreditDatabaseConnector(DataBase db){
         super(db);
     }
@@ -25,7 +26,7 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
     public static CreditDatabaseConnector getInstance() {
         if (instance == null) {
             // TODO: временное решение проблемы с базами данных в CreditDatabaseConnector:
-            DataBase db = PostgresDataBase.getUserServiceInstance();
+            DataBase db = PostgresDataBase.getCreditServiceInstance();
             instance = new CreditDatabaseConnector(db);
         }
         return instance;
@@ -34,20 +35,18 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
     @Override
     protected Credit constructObjectFromResultSet(ResultSet rs) {
         // Колонки, возвращаемые SQL запросом:
-        // id, userId, totalSum, startPaymentDate, endPaymentDate, branchId
+        // id, userId, totalSum, startPaying, endPaying
         Credit returnCredit = null;
         try {
             returnCredit = new Credit.Builder()
                     .id(rs.getLong("id"))
                     .userId(rs.getLong("userId"))
-                    .branchId(rs.getLong("branchId"))
-                    .totalSum(rs.getDouble("totalSum"))
-                    .startPaymentDate(rs.getDate("startPaymentDate").toLocalDate())
-                    .endPaymentDate(rs.getDate("endPaymentDate").toLocalDate())
+                    .totalSum(rs.getBigDecimal("totalSum"))
+                    .startPaymentDate(rs.getDate("startPaying").toLocalDate())
+                    .endPaymentDate(rs.getDate("endPaying").toLocalDate())
                     .build();
         } catch (SQLException e) {
-            // TODO: решить, как обрабатывать ошибку при невозможности создать sex из полученных данных.
-            // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
+            e.printStackTrace();
         }
         return returnCredit;
     }
@@ -57,7 +56,7 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit>{
         List<Parameter> params = new ArrayList<>();
 
         params.add(new LongParameter("userId", credit.getUserId()));
-        params.add(new DoubleParameter("totalSum", credit.getTotalSum()));
+        params.add(new BigDecimalParameter("totalSum", credit.getTotalSum()));
         params.add(new DateParameter("startPaymentDate", Date.valueOf(credit.getStartPaymentDate())));
         params.add(new DateParameter("endPaymentDate", Date.valueOf(credit.getEndPaymentDate())));
         params.add(new LongParameter("branchId", credit.getBranchId()));

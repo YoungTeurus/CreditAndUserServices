@@ -1,10 +1,12 @@
-package models;
+package services.users.models;
 
-import modelconnectors.SexDatabaseConnector;
+import services.credits.modelconnectors.SexDatabaseConnector;
+import models.AbstractModel;
+import services.credits.models.Sex;
 
 import java.time.LocalDate;
 
-public class UserServiceUser extends AbstractModel {
+public class User extends AbstractModel {
     private final long id;
     private final long creditServiceId;
     private final String firstname;
@@ -76,12 +78,12 @@ public class UserServiceUser extends AbstractModel {
             return this;
         }
 
-        public UserServiceUser build() {
-            return new UserServiceUser(this);
+        public User build() {
+            return new User(this);
         }
     }
 
-    private UserServiceUser(Builder builder) {
+    private User(Builder builder) {
         this.id = builder.id;
         this.creditServiceId = builder.creditServiceId;
         this.birthDate = builder.birthDate;

@@ -1,4 +1,6 @@
-package models;
+package services.users.models;
+
+import models.AbstractModel;
 
 public class Sex extends AbstractModel {
     private final long id;

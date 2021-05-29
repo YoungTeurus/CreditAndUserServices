@@ -1,16 +1,17 @@
-package modelconnectors;
+package services.credits.modelconnectors;
 
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
 import database.constructor.*;
-import models.Payment;
+import modelconnectors.BaseDatabaseConnector;
+import services.credits.models.Payment;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment>{
+public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment> {
     private PaymentDatabaseConnector(DataBase db){
         super(db);
     }
@@ -25,7 +26,7 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment>{
     public static PaymentDatabaseConnector getInstance() {
         if (instance == null) {
             // TODO: временное решение проблемы с базами данных в PaymentDatabaseConnector:
-            DataBase db = PostgresDataBase.getUserServiceInstance();
+            DataBase db = PostgresDataBase.getCreditServiceInstance();
             instance = new PaymentDatabaseConnector(db);
         }
         return instance;
@@ -44,8 +45,7 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment>{
                     rs.getDate("date").toLocalDate()
             );
         } catch (SQLException e) {
-            // TODO: решить, как обрабатывать ошибку при невозможности создать sex из полученных данных.
-            // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
+            e.printStackTrace();
         }
         return returnPayment;
     }

@@ -1,10 +1,10 @@
-package servlets;
+package services.main;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import config.Config;
+import services.users.Config;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
@@ -12,8 +12,10 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import models.*;
 import models.error.*;
+import services.credits.models.Credit;
+import services.credits.models.User;
+import servlets.BaseServlet;
 
 @WebServlet(name="get", urlPatterns = "/get")
 public class MainServlet extends BaseServlet {

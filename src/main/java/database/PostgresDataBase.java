@@ -1,6 +1,6 @@
 package database;
 
-import config.Config;
+import services.users.Config;
 
 import java.sql.*;
 
@@ -68,14 +68,22 @@ public class PostgresDataBase implements DataBase {
     // TODO: временное решение для разных сервисов:
     public static PostgresDataBase getUserServiceInstance() {
         if (userServiceInstance == null) {
-            userServiceInstance = new PostgresDataBase(Config.getUserServiceDBHost(), Config.getUserServiceDBLogin(), Config.getUserServiceDBPass());
+            userServiceInstance = new PostgresDataBase(
+                    Config.getUserServiceDBHost(),
+                    Config.getUserServiceDBLogin(),
+                    Config.getUserServiceDBPass()
+            );
         }
         return userServiceInstance;
     }
 
     public static PostgresDataBase getCreditServiceInstance() {
         if (creditServiceInstance == null) {
-            creditServiceInstance = new PostgresDataBase(Config.getUserServiceDBHost(), Config.getUserServiceDBLogin(), Config.getUserServiceDBPass());
+            creditServiceInstance = new PostgresDataBase(
+                    Config.getCreditServiceDBHost(),
+                    Config.getCreditServiceDBLogin(),
+                    Config.getCreditServiceDBPass()
+            );
         }
         return creditServiceInstance;
     }

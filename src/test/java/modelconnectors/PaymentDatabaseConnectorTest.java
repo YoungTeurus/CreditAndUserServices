@@ -1,13 +1,12 @@
 package modelconnectors;
 
 import database.DataBaseConnectionException;
-import models.Payment;
+import services.credits.modelconnectors.PaymentDatabaseConnector;
+import services.credits.models.Payment;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentDatabaseConnectorTest {
     private final PaymentDatabaseConnector pdc = PaymentDatabaseConnector.getInstance();

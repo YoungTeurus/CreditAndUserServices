@@ -1,11 +1,16 @@
-package modelconnectors;
+package services.users.modelconnectors;
 
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
-import database.constructor.*;
-import models.Sex;
-import models.User;
+import database.constructor.DateParameter;
+import database.constructor.LongParameter;
+import database.constructor.Parameter;
+import database.constructor.StringParameter;
+import modelconnectors.BaseDatabaseConnector;
+import services.credits.modelconnectors.SexDatabaseConnector;
+import services.credits.models.Sex;
+import services.users.models.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,7 +31,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
     public static UserDatabaseConnector getInstance() {
         if (instance == null) {
-            // TODO: временное решение проблемы с базами данных в UserDatabaseConnector:
+            // TODO: временное решение проблемы с базами данных в UserServiceUserDatabaseConnector:
             DataBase db = PostgresDataBase.getUserServiceInstance();
             instance = new UserDatabaseConnector(db);
         }
@@ -44,6 +49,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         params.add(new StringParameter("passport_number", user.getPassportNumber()));
         params.add(new StringParameter("tax_payer_id", user.getTaxPayerID()));
         params.add(new StringParameter("driver_licence_id", user.getDriverLicenceId()));
+        params.add(new LongParameter("creditServiceId", user.getCreditServiceId()));
 
         return params;
     }
@@ -61,7 +67,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     protected User constructObjectFromResultSet(ResultSet rs) {
         // Оторванность sql запроса и разбирания результа запроса для создания объекта напрягает.
         // Колонки, возвращаемые SQL запросом:
-        // id, firstname, birth_date, passport_number, sex_id, surname, tax_payer_id, driver_licence_id
+        // id, firstname, birth_date, passport_number, sex_id, surname, tax_payer_id, driver_licence_id, creditServiceId
         try {
             int userSexForeignKey = rs.getInt("sex_id");
             Sex usersSex = getSexById(userSexForeignKey);
@@ -73,11 +79,14 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
                     .sex(usersSex)
                     .surname(rs.getString("surname"))
                     .taxPayerID(rs.getString("tax_payer_id"))
-                    .driverLicenceId(rs.getString("driver_licence_id")).build();
+                    .driverLicenceId(rs.getString("driver_licence_id"))
+                    .creditServiceId(rs.getLong("creditServiceId"))
+                    .build();
             return user;
         } catch (SQLException e){
             // TODO: решить, как обрабатывать ошибку при невозможности создать user из полученных данных.
             // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
+            e.printStackTrace();
             return null;
         }
     }

@@ -1,4 +1,6 @@
-package models;
+package services.credits.models;
+
+import models.AbstractModel;
 
 import java.time.LocalDate;
 

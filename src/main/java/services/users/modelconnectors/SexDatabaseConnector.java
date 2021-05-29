@@ -1,10 +1,11 @@
-package modelconnectors;
+package services.users.modelconnectors;
 
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
 import database.constructor.Parameter;
-import models.Sex;
+import modelconnectors.BaseDatabaseConnector;
+import services.credits.models.Sex;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,6 +45,7 @@ public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
         } catch (SQLException e) {
             // TODO: решить, как обрабатывать ошибку при невозможности создать sex из полученных данных.
             // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
+            e.printStackTrace();
         }
         return returnSex;
     }

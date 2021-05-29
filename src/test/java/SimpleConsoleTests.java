@@ -1,8 +1,8 @@
 import database.DataBaseConnectionException;
-import modelconnectors.SexDatabaseConnector;
-import modelconnectors.UserDatabaseConnector;
-import models.Sex;
-import models.User;
+import services.credits.modelconnectors.SexDatabaseConnector;
+import services.credits.modelconnectors.UserDatabaseConnector;
+import services.credits.models.Sex;
+import services.credits.models.User;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 

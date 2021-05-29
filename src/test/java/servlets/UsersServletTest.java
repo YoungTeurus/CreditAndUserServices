@@ -2,17 +2,17 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import config.Config;
+import services.users.Config;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import models.User;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import models.UserServiceUser;
+import services.users.models.User;
 import models.error.ErrorMessage;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,10 @@ import java.util.List;
 class UsersServletTest {
     // TODO: ПЕРЕД ЗАПУСКОМ ТЕСТОВ ЗАПУСКАТЬ JETTY:RUN.
 
-    private UserServiceUser connectAndGetSingleUser(String URL) {
+    // TODO: ЛОВИТСЯ ПЛАВАЮЩИЙ БАГ:
+    //  ПРИ ПЕРВОМ ЗАПУСКЕ ТЕСТОВ КАЖДЫЙ ЗАПРОС ВОЗВРАЩАЕТ NULL.
+
+    private User connectAndGetSingleUser(String URL) {
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
         Invocation.Builder request = resource.request();
@@ -34,12 +37,12 @@ class UsersServletTest {
         response.bufferEntity();
         String json = response.readEntity(String.class);
 
-        Type userType = new TypeToken<UserServiceUser>(){}.getType();
+        Type userType = new TypeToken<User>(){}.getType();
 
         return new Gson().fromJson(json, userType);
     }
 
-    private List<UserServiceUser> connectAndGetMultipleUsers(String URL){
+    private List<User> connectAndGetMultipleUsers(String URL){
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
         Invocation.Builder request = resource.request();
@@ -48,7 +51,7 @@ class UsersServletTest {
         response.bufferEntity();
         String json = response.readEntity(String.class);
 
-        Type listType = new TypeToken<ArrayList<UserServiceUser>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<User>>(){}.getType();
 
         return new Gson().fromJson(json, listType);
     }
@@ -69,7 +72,7 @@ class UsersServletTest {
 
     @Test
     public void getUserById() {
-        UserServiceUser user = connectAndGetSingleUser(Config.getUsersURL() +
+        User user = connectAndGetSingleUser(Config.getUsersURL() +
                 "?id=1"
         );
 
@@ -88,7 +91,7 @@ class UsersServletTest {
     @Test
     public void getUserByFirstnameSurnameAndPassport() {
         // Пробел замещается символом "%20"
-        UserServiceUser user = connectAndGetSingleUser(Config.getUsersURL() +
+        User user = connectAndGetSingleUser(Config.getUsersURL() +
                 "?firstname=TESTUSER1&surname=TESTUSER1&passportNumber=1234%20567890"
         );
 
@@ -106,7 +109,7 @@ class UsersServletTest {
 
     @Test
     public void getAllUsers(){
-        List<UserServiceUser> users = connectAndGetMultipleUsers(Config.getUsersURL() +
+        List<User> users = connectAndGetMultipleUsers(Config.getUsersURL() +
                 "?getAll=1"
         );
         System.out.println(users);

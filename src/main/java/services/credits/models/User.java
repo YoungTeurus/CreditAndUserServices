@@ -1,6 +1,7 @@
-package models;
+package services.credits.models;
 
-import modelconnectors.SexDatabaseConnector;
+import services.credits.modelconnectors.SexDatabaseConnector;
+import models.AbstractModel;
 
 import java.time.LocalDate;
 

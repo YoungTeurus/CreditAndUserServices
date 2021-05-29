@@ -1,10 +1,11 @@
-package servlets;
+package services.users;
 
 import com.google.gson.Gson;
 import database.DataBaseConnectionException;
-import modelconnectors.UserServiceUserDatabaseConnector;
-import models.UserServiceUser;
+import services.users.modelconnectors.UserDatabaseConnector;
+import services.users.models.User;
 import models.error.ErrorMessage;
+import servlets.BaseServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @WebServlet(name="users", urlPatterns = "/user")
 public class UsersServlet extends BaseServlet {
-    private final UserServiceUserDatabaseConnector repos = UserServiceUserDatabaseConnector.getInstance();
+    private final UserDatabaseConnector repos = UserDatabaseConnector.getInstance();
 
     @Override
     protected Object processParameters() {
@@ -60,7 +61,7 @@ public class UsersServlet extends BaseServlet {
                     "Параметр 'id' содержал неверные данные. Проверьте правильность данных и повторите запрос.");
         }
 
-        UserServiceUser user = repos.getById(parsedId);
+        User user = repos.getById(parsedId);
         if (user == null) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                     "Пользователь с данным ID не найден");
@@ -69,7 +70,7 @@ public class UsersServlet extends BaseServlet {
     }
 
     private Object getUserByFirstnameSurnameAndPassport(String firstname, String surname, String passportNumber) throws SQLException, DataBaseConnectionException {
-        List<UserServiceUser> users = repos.getByFirstnameSurnameAndPassport(firstname, surname, passportNumber);
+        List<User> users = repos.getByFirstnameSurnameAndPassport(firstname, surname, passportNumber);
         if (users.isEmpty()) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                     "Пользователь с заданным именем, фамилией и пасспортными данными не найден.");
@@ -80,7 +81,7 @@ public class UsersServlet extends BaseServlet {
     }
 
     private Object getAllUsers() throws SQLException, DataBaseConnectionException {
-        List<UserServiceUser> users = repos.getAll();
+        List<User> users = repos.getAll();
         return users;
     }
 
@@ -88,7 +89,7 @@ public class UsersServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: протестировать код добавления пользователей.
         request.setCharacterEncoding("UTF-8");
-        UserServiceUser user = new Gson().fromJson(request.getReader(), UserServiceUser.class);
+        User user = new Gson().fromJson(request.getReader(), User.class);
         try {
             long id = repos.addAndReturnId(user);
             sendError(new ErrorMessage(HttpServletResponse.SC_OK,

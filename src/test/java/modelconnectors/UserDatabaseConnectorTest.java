@@ -1,13 +1,11 @@
 package modelconnectors;
 
-import config.Config;
-import database.DataBase;
 import database.DataBaseConnectionException;
-import database.PostgresDataBase;
 import database.constructor.LongParameter;
 import database.constructor.Parameter;
 import database.constructor.StringParameter;
-import models.User;
+import services.credits.modelconnectors.UserDatabaseConnector;
+import services.credits.models.User;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
