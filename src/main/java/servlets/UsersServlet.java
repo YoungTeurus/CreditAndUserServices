@@ -2,8 +2,8 @@ package servlets;
 
 import com.google.gson.Gson;
 import database.DataBaseConnectionException;
-import modelconnectors.UserDatabaseConnector;
-import models.User;
+import modelconnectors.UserServiceUserDatabaseConnector;
+import models.UserServiceUser;
 import models.error.ErrorMessage;
 
 import javax.servlet.ServletException;
@@ -16,28 +16,33 @@ import java.util.List;
 
 @WebServlet(name="users", urlPatterns = "/user")
 public class UsersServlet extends BaseServlet {
-    private final UserDatabaseConnector repos = UserDatabaseConnector.getInstance();
+    private final UserServiceUserDatabaseConnector repos = UserServiceUserDatabaseConnector.getInstance();
 
     @Override
     protected Object processParameters() {
+        // TODO: функция добавления и удаления пользователей временно отключена
+        // String add = getRequestParameterValue("add");
+        // String remove = getRequestParameterValue("remove");
+
         String id = getRequestParameterValue("id");
-        String remove = getRequestParameterValue("remove");
-        String passport = getRequestParameterValue("passport");
+
         String firstname = getRequestParameterValue("firstname");
+        String surname = getRequestParameterValue("surname");
+        String passportNumber = getRequestParameterValue("passportNumber");
+
+        String getAll = getRequestParameterValue("getAll");
 
         Object result;
         try {
-            if (remove != null && remove.equals("true")) {
-                result = handleRemove(id);
-            } else if (passport != null) {
-                result = handlePassport(passport);
-            } else if (id != null) {
-                result = handleId(id);
-            } else if (firstname != null) {
-                result = handleFirstname(firstname);
+            if(id != null){
+                result = getUserById(id);
+            } else if (firstname != null && surname != null && passportNumber != null){
+                result = getUserByFirstnameSurnameAndPassport(firstname, surname, passportNumber);
+            } else if (getAll != null && getAll.equals("1")) {
+                result = getAllUsers();
             } else {
                 result = new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                        "Запрос не содержал ни одного параметра.");
+                        "Запрос не содержал значимых параметров или был неполным. Проверьте правильность данных и повторите запрос.");
             }
         } catch (SQLException throwables) {
             result = new ErrorMessage(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
@@ -49,12 +54,17 @@ public class UsersServlet extends BaseServlet {
         return result;
     }
 
-    private Object handleId(String id) throws SQLException, DataBaseConnectionException {
-        if (id == null) {
-            return repos.getAll();
+    private Object getUserById(String id) throws SQLException, DataBaseConnectionException {
+        int parsedId;
+
+        try {
+            parsedId = Integer.parseInt(id);
+        } catch (NumberFormatException ignored){
+            return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST,
+                    "Параметр 'id' содержал неверные данные. Проверьте правильность данных и повторите запрос.");
         }
 
-        User user = repos.getById(Integer.parseInt(id));
+        UserServiceUser user = repos.getById(parsedId);
         if (user == null) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                     "Пользователь с данным ID не найден");
@@ -62,38 +72,26 @@ public class UsersServlet extends BaseServlet {
         return user;
     }
 
-    private Object handleRemove(String id) throws SQLException, DataBaseConnectionException {
-        boolean result = repos.removeAndReturnSuccess(Long.parseLong(id));
-        if (!result) {
-            return new ErrorMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Произошла ошибка при удалении пользователя");
-        }
-        return new ErrorMessage(HttpServletResponse.SC_OK,
-                "Пользователь с id = " + id + " успешно удален.");
-    }
-
-    private Object handlePassport(String passport) throws SQLException, DataBaseConnectionException {
-        User user = repos.getByPassportID(passport);
-        if (user == null) {
-            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                    "Пользователь с данными паспортными данными не найден.");
-        }
-        return user;
-    }
-
-    private Object handleFirstname(String firstname) throws SQLException, DataBaseConnectionException{
-        List<User> users = repos.getByFirstname(firstname);
+    private Object getUserByFirstnameSurnameAndPassport(String firstname, String surname, String passportNumber) throws SQLException, DataBaseConnectionException {
+        List<UserServiceUser> users = repos.getByFirstnameSurnameAndPassport(firstname, surname, passportNumber);
         if (users.isEmpty()) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                    "Пользователи с заданным именем не найдены.");
+                    "Пользователь с заданным именем, фамилией и пасспортными данными не найден.");
         }
+        // TODO: возможность того, что найденных пользователей окажется больше 1-го всё-ещё сохраняется.
+        //  Возможно всё-таки стоит возвращать список всех пользователей, запрашивая у пользователя уточнение по ID.
+        return users.get(0);
+    }
+
+    private Object getAllUsers() throws SQLException, DataBaseConnectionException {
+        List<UserServiceUser> users = repos.getAll();
         return users;
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        User user = new Gson().fromJson(request.getReader(), User.class);
+        UserServiceUser user = new Gson().fromJson(request.getReader(), UserServiceUser.class);
         try {
             long id = repos.addAndReturnId(user);
             sendError(new ErrorMessage(HttpServletResponse.SC_OK,

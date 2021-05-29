@@ -16,4 +16,12 @@ public class ErrorMessage {
     public String getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "ErrorMessage{" +
+                "error=" + error +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

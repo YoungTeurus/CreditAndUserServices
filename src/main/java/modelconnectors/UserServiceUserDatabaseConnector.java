@@ -3,16 +3,20 @@ package modelconnectors;
 import database.DataBase;
 import database.DataBaseConnectionException;
 import database.PostgresDataBase;
-import database.constructor.*;
+import database.constructor.DateParameter;
+import database.constructor.LongParameter;
+import database.constructor.Parameter;
+import database.constructor.StringParameter;
 import models.Sex;
 import models.User;
+import models.UserServiceUser;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
-    private UserDatabaseConnector(DataBase db){
+public class UserServiceUserDatabaseConnector extends BaseDatabaseConnector<UserServiceUser> {
+    private UserServiceUserDatabaseConnector(DataBase db){
         super(db);
     }
 
@@ -22,19 +26,19 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     }
 
     private final SexDatabaseConnector sexDatabaseConnector = SexDatabaseConnector.getInstance();
-    private static UserDatabaseConnector instance;
+    private static UserServiceUserDatabaseConnector instance;
 
-    public static UserDatabaseConnector getInstance() {
+    public static UserServiceUserDatabaseConnector getInstance() {
         if (instance == null) {
-            // TODO: временное решение проблемы с базами данных в UserDatabaseConnector:
+            // TODO: временное решение проблемы с базами данных в UserServiceUserDatabaseConnector:
             DataBase db = PostgresDataBase.getUserServiceInstance();
-            instance = new UserDatabaseConnector(db);
+            instance = new UserServiceUserDatabaseConnector(db);
         }
         return instance;
     }
 
     @Override
-    protected List<Parameter> getParametersForInsert(User user) {
+    protected List<Parameter> getParametersForInsert(UserServiceUser user) {
         List<Parameter> params = new ArrayList<>();
 
         params.add(new StringParameter("firstname", user.getFirstname()));
@@ -44,6 +48,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         params.add(new StringParameter("passport_number", user.getPassportNumber()));
         params.add(new StringParameter("tax_payer_id", user.getTaxPayerID()));
         params.add(new StringParameter("driver_licence_id", user.getDriverLicenceId()));
+        params.add(new LongParameter("creditServiceId", user.getCreditServiceId()));
 
         return params;
     }
@@ -58,22 +63,24 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return db.executeStatement(preparedStatement);
     }
     @Override
-    protected User constructObjectFromResultSet(ResultSet rs) {
+    protected UserServiceUser constructObjectFromResultSet(ResultSet rs) {
         // Оторванность sql запроса и разбирания результа запроса для создания объекта напрягает.
         // Колонки, возвращаемые SQL запросом:
-        // id, firstname, birth_date, passport_number, sex_id, surname, tax_payer_id, driver_licence_id
+        // id, firstname, birth_date, passport_number, sex_id, surname, tax_payer_id, driver_licence_id, creditServiceId
         try {
             int userSexForeignKey = rs.getInt("sex_id");
             Sex usersSex = getSexById(userSexForeignKey);
 
-            User user = new User.Builder(rs.getString("firstname"))
+            UserServiceUser user = new UserServiceUser.Builder(rs.getString("firstname"))
                     .id(rs.getInt("id"))
                     .birthDate(rs.getDate("birth_date").toLocalDate())
                     .passportNumber(rs.getString("passport_number"))
                     .sex(usersSex)
                     .surname(rs.getString("surname"))
                     .taxPayerID(rs.getString("tax_payer_id"))
-                    .driverLicenceId(rs.getString("driver_licence_id")).build();
+                    .driverLicenceId(rs.getString("driver_licence_id"))
+                    .creditServiceId(rs.getLong("creditServiceId"))
+                    .build();
             return user;
         } catch (SQLException e){
             // TODO: решить, как обрабатывать ошибку при невозможности создать user из полученных данных.
@@ -83,11 +90,11 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     }
 
 
-    public final User getByPassportID(String passport) throws SQLException, DataBaseConnectionException  {
+    public final UserServiceUser getByPassportID(String passport) throws SQLException, DataBaseConnectionException  {
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("passport_number", passport));
 
-        List<User> foundUsers = getByParameters(params);
+        List<UserServiceUser> foundUsers = getByParameters(params);
 
         if (foundUsers.size() > 0) {
             return foundUsers.get(0);
@@ -95,22 +102,22 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return null;
     }
 
-    public final List<User> getByFirstname(String firstname) throws SQLException, DataBaseConnectionException {
+    public final List<UserServiceUser> getByFirstname(String firstname) throws SQLException, DataBaseConnectionException {
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("firstname", firstname));
 
-        List<User> foundUsers = getByParameters(params);
+        List<UserServiceUser> foundUsers = getByParameters(params);
 
         return foundUsers;
     }
 
-    public final List<User> getByFirstnameSurnameAndPassport(String firstname, String surname, String passportNumber) throws SQLException, DataBaseConnectionException {
+    public final List<UserServiceUser> getByFirstnameSurnameAndPassport(String firstname, String surname, String passportNumber) throws SQLException, DataBaseConnectionException {
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("firstname", firstname));
         params.add(new StringParameter("surname", surname));
         params.add(new StringParameter("passport_number", passportNumber));
 
-        List<User> foundUsers = getByParameters(params);
+        List<UserServiceUser> foundUsers = getByParameters(params);
 
         return foundUsers;
     }
