@@ -79,12 +79,11 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.github.youngteurus</groupId>
             <artifactId>DatabaseLibrary</artifactId>
             <version>0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/DatabaseLibrary-0.1.jar</systemPath>
         </dependency>
     </dependencies>
 
