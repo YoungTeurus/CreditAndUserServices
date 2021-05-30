@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CreditHistoryServletTest {
     // TODO: ПЕРЕД ЗАПУСКОМ ТЕСТОВ ЗАПУСКАТЬ JETTY:RUN.
 
+    private String serviceURL = "http://localhost:8080/credit";
+
     private User connectAndGetUser(String URL){
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
@@ -67,7 +69,7 @@ class CreditHistoryServletTest {
     @Test
     void getCreditsByUserId(){
         List<Credit> credits = connectAndGetArrayListOfCredits(
-                "http://localhost:8080/credit?controlValue=1&userId=1"
+                serviceURL + "?controlValue=1&userId=1"
         );
 
         System.out.println(credits);

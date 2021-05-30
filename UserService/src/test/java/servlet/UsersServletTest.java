@@ -3,7 +3,6 @@ package servlet;
 import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import config.Config;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
@@ -26,6 +25,8 @@ class UsersServletTest {
 
     // TODO: ЛОВИТСЯ ПЛАВАЮЩИЙ БАГ:
     //  ПРИ ПЕРВОМ ЗАПУСКЕ ТЕСТОВ КАЖДЫЙ ЗАПРОС ВОЗВРАЩАЕТ NULL.
+
+    private String serviceURL = "http://localhost:8081/user";
 
     private User connectAndGetSingleUser(String URL) {
         Client client = ClientBuilder.newClient();
@@ -71,7 +72,7 @@ class UsersServletTest {
 
     @Test
     public void getUserById() {
-        User user = connectAndGetSingleUser("http://localhost:8080/user" +
+        User user = connectAndGetSingleUser(serviceURL +
                 "?id=1"
         );
 
@@ -90,7 +91,7 @@ class UsersServletTest {
     @Test
     public void getUserByFirstnameSurnameAndPassport() {
         // Пробел замещается символом "%20"
-        User user = connectAndGetSingleUser("http://localhost:8080/user" +
+        User user = connectAndGetSingleUser(serviceURL +
                 "?firstname=TESTUSER1&surname=TESTUSER1&passportNumber=1234%20567890"
         );
 
@@ -108,7 +109,7 @@ class UsersServletTest {
 
     @Test
     public void getAllUsers(){
-        List<User> users = connectAndGetMultipleUsers("http://localhost:8080/user" +
+        List<User> users = connectAndGetMultipleUsers(serviceURL +
                 "?getAll=1"
         );
         System.out.println(users);
@@ -119,7 +120,7 @@ class UsersServletTest {
     @Test
     public void getErrorWithoutParameters(){
         ErrorMessage errorMessage = connectAndGetError(
-                "http://localhost:8080/user"
+                serviceURL
         );
 
         System.out.println(errorMessage);
