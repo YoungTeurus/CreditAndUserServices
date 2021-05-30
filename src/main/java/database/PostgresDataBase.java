@@ -80,9 +80,9 @@ public class PostgresDataBase implements DataBase {
     public static PostgresDataBase getCreditServiceInstance() {
         if (creditServiceInstance == null) {
             creditServiceInstance = new PostgresDataBase(
-                    Config.getCreditServiceDBHost(),
-                    Config.getCreditServiceDBLogin(),
-                    Config.getCreditServiceDBPass()
+                    services.credits.Config.getCreditServiceDBHost(),
+                    services.credits.Config.getCreditServiceDBLogin(),
+                    services.credits.Config.getCreditServiceDBPass()
             );
         }
         return creditServiceInstance;

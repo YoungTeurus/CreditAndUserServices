@@ -2,7 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import services.users.Config;
+import services.main.config.Config;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
@@ -109,6 +109,7 @@ class UsersServletTest {
 
     @Test
     public void getAllUsers(){
+        System.out.println(Config.getUsersURL());
         List<User> users = connectAndGetMultipleUsers(Config.getUsersURL() +
                 "?getAll=1"
         );
