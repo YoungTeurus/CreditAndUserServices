@@ -35,7 +35,7 @@ class MainServletTest {
 
     @Test
     public void getUserAndCreditsByFullNameAndPassport() {
-        User user = findByFullNameAndPassport("TESTUSER1", "TESTUSER1", "1234567890");
+        User user = findByFullNameAndPassport("TESTUSER1", "TESTUSER1", "Отчество", "1234567890");
         Assertions.assertNotNull(user);
         Assertions.assertEquals(1, user.getId());
         List<Credit> creditList = getCreditInfoByUser(user);
@@ -46,7 +46,7 @@ class MainServletTest {
 
     @Test
     public void getUserAndCreditsByFullNameAndDriverId() {
-        User user = findByFullNameAndDriverId("TESTUSER1", "TESTUSER1", "QWERTY-12");
+        User user = findByFullNameAndDriverId("TESTUSER1", "TESTUSER1", "Отчество", "QWERTY-12");
         Assertions.assertNotNull(user);
         Assertions.assertEquals(1, user.getId());
         List<Credit> creditList = getCreditInfoByUser(user);
@@ -57,7 +57,7 @@ class MainServletTest {
 
     @Test
     public void getUserAndCreditsByFullNameAndTaxId() {
-        User user = findByFullNameAndTaxId("TESTUSER1", "TESTUSER1", "123456789012");
+        User user = findByFullNameAndTaxId("TESTUSER1", "TESTUSER1", "Отчество", "123456789012");
         Assertions.assertNotNull(user);
         Assertions.assertEquals(1, user.getId());
         List<Credit> creditList = getCreditInfoByUser(user);
@@ -71,18 +71,21 @@ class MainServletTest {
         return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=1"), listType);
     }
 
-    private User findByFullNameAndPassport(String firstname, String surname, String passport) {
-        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&passportNumber=" + passport);
+    private User findByFullNameAndPassport(String firstname, String surname, String patronymic, String passport) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
+                 + "&patronymic=" + patronymic + "&passportNumber=" + passport);
         return new Gson().fromJson(json, User.class);
     }
 
-    private User findByFullNameAndDriverId(String firstname, String surname, String driverID) {
-        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&driverID=" + driverID);
+    private User findByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
+                + "&patronymic=" + patronymic + "&driverID=" + driverID);
         return new Gson().fromJson(json, User.class);
     }
 
-    private User findByFullNameAndTaxId(String firstname, String surname, String taxID) {
-        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&taxID=" + taxID);
+    private User findByFullNameAndTaxId(String firstname, String surname, String patronymic, String taxID) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
+                + "&patronymic=" + patronymic + "&taxID=" + taxID);
         return new Gson().fromJson(json, User.class);
     }
 

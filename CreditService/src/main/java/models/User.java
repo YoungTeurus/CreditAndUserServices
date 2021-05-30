@@ -9,6 +9,7 @@ public class User extends AbstractModel {
     private final long id;
     private final String firstname;
     private final String surname;
+    private final String patronymic;
     private final LocalDate birthDate;
     private final Sex sex;
     private final String passportNumber;
@@ -20,6 +21,7 @@ public class User extends AbstractModel {
         private final String firstname;
         private long id = 0;
         private String surname = "";
+        private String patronymic = "";
         private LocalDate birthDate = LocalDate.now();
         private Sex sex;
         private String passportNumber = "";
@@ -55,6 +57,11 @@ public class User extends AbstractModel {
             return this;
         }
 
+        public Builder patronymic(String patronymic) {
+            this.patronymic = patronymic;
+            return this;
+        }
+
         public Builder passportNumber(String passportNumber) {
             this.passportNumber = passportNumber;
             return this;
@@ -84,6 +91,7 @@ public class User extends AbstractModel {
         this.firstname = builder.firstname;
         this.surname = builder.surname;
         this.taxPayerID = builder.taxPayerID;
+        this.patronymic = builder.patronymic;
     }
 
     public long getId() {
@@ -116,6 +124,10 @@ public class User extends AbstractModel {
 
     public String getDriverLicenceId() {
         return driverLicenceId;
+    }
+
+    public String getPatronymic() {
+        return patronymic;
     }
 
     @Override

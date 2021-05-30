@@ -43,6 +43,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
         params.add(new StringParameter("firstname", user.getFirstname()));
         params.add(new StringParameter("surname", user.getSurname()));
+        params.add(new StringParameter("patronymic", user.getPatronymic()));
         params.add(new DateParameter("birth_date", Date.valueOf(user.getBirthDate())));
         params.add(new LongParameter("sex_id", user.getSex().getId()));
         params.add(new StringParameter("passport_number", user.getPassportNumber()));
@@ -76,6 +77,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
                     .passportNumber(rs.getString("passport_number"))
                     .sex(usersSex)
                     .surname(rs.getString("surname"))
+                    .patronymic(rs.getString("patronymic"))
                     .taxPayerID(rs.getString("tax_payer_id"))
                     .driverLicenceId(rs.getString("driver_licence_id")).build();
             return user;

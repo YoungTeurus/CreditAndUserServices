@@ -117,9 +117,9 @@ class UsersServletTest {
     }
 
     @Test
-    public void getUserByFirstnameSurnameAndPassport() {
+    public void getUserByFullNameAndPassport() {
         User user = GETAndGetSingleUser(serviceURL +
-                "?firstname=TESTUSER1&surname=TESTUSER1&passportNumber=1234567890"
+                "?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&passportNumber=1234567890"
         );
 
         System.out.println(user);

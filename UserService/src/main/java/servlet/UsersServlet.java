@@ -25,6 +25,7 @@ public class UsersServlet extends BaseServlet {
 
         String firstname = getRequestParameterValue("firstname");
         String surname = getRequestParameterValue("surname");
+        String patronymic = getRequestParameterValue("patronymic");
         String passportNumber = getRequestParameterValue("passportNumber");
         String driverID = getRequestParameterValue("driverID");
         String taxID = getRequestParameterValue("taxID");
@@ -35,12 +36,12 @@ public class UsersServlet extends BaseServlet {
         try {
             if(id != null){
                 result = getUserById(id);
-            } else if (firstname != null && surname != null && passportNumber != null){
-                result = getUserByFirstnameSurnameAndPassport(firstname, surname, passportNumber);
-            } else if (firstname != null && surname != null && driverID != null) {
-                result = getUserByFirstnameSurnameAndDriverID(firstname, surname, driverID);
-            } else if (firstname != null && surname != null && taxID != null) {
-                result = getUserByFirstnameSurnameAndTaxID(firstname, surname, taxID);
+            } else if (firstname != null && surname != null && patronymic != null && passportNumber != null){
+                result = getUserByFullNameAndPassport(firstname, surname, patronymic, passportNumber);
+            } else if (firstname != null && surname != null && patronymic != null && driverID != null) {
+                result = getUserByFullNameAndDriverID(firstname, surname, patronymic, driverID);
+            } else if (firstname != null && surname != null && patronymic != null && taxID != null) {
+                result = getUserByFullNameAndTaxID(firstname, surname, patronymic, taxID);
             } else if (getAll != null && getAll.equals("1")) {
                 result = getAllUsers();
             } else {
@@ -74,8 +75,8 @@ public class UsersServlet extends BaseServlet {
         return user;
     }
 
-    private Object getUserByFirstnameSurnameAndPassport(String firstname, String surname, String passportNumber) throws SQLException, DataBaseConnectionException {
-        List<User> users = repos.getByFirstnameSurnameAndPassport(firstname, surname, passportNumber);
+    private Object getUserByFullNameAndPassport(String firstname, String surname, String patronymic, String passportNumber) throws SQLException, DataBaseConnectionException {
+        List<User> users = repos.getByFullNameAndPassport(firstname, surname, patronymic, passportNumber);
         if (users.isEmpty()) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                     "Пользователь с заданным именем, фамилией и пасспортными данными не найден.");
@@ -85,8 +86,8 @@ public class UsersServlet extends BaseServlet {
         return users.get(0);
     }
 
-    private Object getUserByFirstnameSurnameAndDriverID(String firstname, String surname, String driverId) throws SQLException, DataBaseConnectionException {
-        List<User> users = repos.getByFirstnameSurnameAndDriverId(firstname, surname, driverId);
+    private Object getUserByFullNameAndDriverID(String firstname, String surname, String patronymic, String driverId) throws SQLException, DataBaseConnectionException {
+        List<User> users = repos.getByFullNameAndDriverId(firstname, surname, patronymic, driverId);
         if (users.isEmpty()) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                     "Пользователь с заданным именем, фамилией и водительским не найден.");
@@ -96,8 +97,8 @@ public class UsersServlet extends BaseServlet {
         return users.get(0);
     }
 
-    private Object getUserByFirstnameSurnameAndTaxID(String firstname, String surname, String taxID) throws SQLException, DataBaseConnectionException {
-        List<User> users = repos.getByFirstnameSurnameAndTaxID(firstname, surname, taxID);
+    private Object getUserByFullNameAndTaxID(String firstname, String surname, String patronymic, String taxID) throws SQLException, DataBaseConnectionException {
+        List<User> users = repos.getByFullNameAndTaxID(firstname, surname, patronymic, taxID);
         if (users.isEmpty()) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                     "Пользователь с заданным именем, фамилией и ИНН не найден.");

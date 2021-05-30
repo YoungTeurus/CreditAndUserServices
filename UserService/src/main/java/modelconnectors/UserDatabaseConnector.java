@@ -43,6 +43,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
         params.add(new StringParameter("firstname", user.getFirstname()));
         params.add(new StringParameter("surname", user.getSurname()));
+        params.add(new StringParameter("patronymic", user.getPatronymic()));
         params.add(new DateParameter("birth_date", Date.valueOf(user.getBirthDate())));
         params.add(new LongParameter("sex_id", user.getSex().getId()));
         params.add(new StringParameter("passport_number", user.getPassportNumber()));
@@ -77,6 +78,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
                     .passportNumber(rs.getString("passport_number"))
                     .sex(usersSex)
                     .surname(rs.getString("surname"))
+                    .patronymic(rs.getString("patronymic"))
                     .taxPayerID(rs.getString("tax_payer_id"))
                     .driverLicenceId(rs.getString("driver_licence_id"))
                     .creditServiceId(rs.getLong("creditServiceId"))
@@ -112,10 +114,11 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return foundUsers;
     }
 
-    public final List<User> getByFirstnameSurnameAndPassport(String firstname, String surname, String passportNumber) throws SQLException, DataBaseConnectionException {
+    public final List<User> getByFullNameAndPassport(String firstname, String surname, String patronymic, String passportNumber) throws SQLException, DataBaseConnectionException {
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("firstname", firstname));
         params.add(new StringParameter("surname", surname));
+        params.add(new StringParameter("patronymic", patronymic));
         params.add(new StringParameter("passport_number", passportNumber));
 
         List<User> foundUsers = getByParameters(params);
@@ -123,10 +126,11 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return foundUsers;
     }
 
-    public final List<User> getByFirstnameSurnameAndDriverId(String firstname, String surname, String driverID) throws SQLException, DataBaseConnectionException {
+    public final List<User> getByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID) throws SQLException, DataBaseConnectionException {
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("firstname", firstname));
         params.add(new StringParameter("surname", surname));
+        params.add(new StringParameter("patronymic", patronymic));
         params.add(new StringParameter("driver_licence_id", driverID));
 
         List<User> foundUsers = getByParameters(params);
@@ -134,10 +138,11 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return foundUsers;
     }
 
-    public final List<User> getByFirstnameSurnameAndTaxID(String firstname, String surname, String taxID) throws SQLException, DataBaseConnectionException {
+    public final List<User> getByFullNameAndTaxID(String firstname, String surname, String patronymic, String taxID) throws SQLException, DataBaseConnectionException {
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("firstname", firstname));
         params.add(new StringParameter("surname", surname));
+        params.add(new StringParameter("patronymic", patronymic));
         params.add(new StringParameter("tax_payer_id", taxID));
 
         List<User> foundUsers = getByParameters(params);
