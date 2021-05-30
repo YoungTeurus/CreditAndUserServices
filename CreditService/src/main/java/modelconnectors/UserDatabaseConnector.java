@@ -1,12 +1,13 @@
 package modelconnectors;
 
-import database.DataBase;
-import database.DataBaseConnectionException;
-import database.PostgresDataBase;
-import database.constructor.DateParameter;
-import database.constructor.LongParameter;
-import database.constructor.Parameter;
-import database.constructor.StringParameter;
+import com.github.youngteurus.servletdatabase.database.DataBase;
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import database.CreditPostgresDataBase;
+import com.github.youngteurus.servletdatabase.database.constructor.DateParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
+import com.github.youngteurus.servletdatabase.database.constructor.StringParameter;
 import models.Sex;
 import models.User;
 
@@ -30,7 +31,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     public static UserDatabaseConnector getInstance() {
         if (instance == null) {
             // TODO: временное решение проблемы с базами данных в UserDatabaseConnector:
-            DataBase db = PostgresDataBase.getCreditServiceInstance();
+            DataBase db = CreditPostgresDataBase.getInstance();
             instance = new UserDatabaseConnector(db);
         }
         return instance;

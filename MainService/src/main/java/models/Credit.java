@@ -1,5 +1,7 @@
 package models;
 
+import com.github.youngteurus.servletdatabase.models.AbstractModel;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

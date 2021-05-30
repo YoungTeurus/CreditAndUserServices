@@ -1,5 +1,7 @@
 package models;
 
+import com.github.youngteurus.servletdatabase.models.AbstractModel;
+
 import java.time.LocalDate;
 
 public class Payment extends AbstractModel {

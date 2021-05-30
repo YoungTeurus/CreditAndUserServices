@@ -1,12 +1,13 @@
 package modelconnectors;
 
-import database.DataBase;
-import database.DataBaseConnectionException;
-import database.PostgresDataBase;
-import database.constructor.BigDecimalParameter;
-import database.constructor.DateParameter;
-import database.constructor.LongParameter;
-import database.constructor.Parameter;
+import com.github.youngteurus.servletdatabase.database.DataBase;
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.database.constructor.BigDecimalParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.DateParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
+import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import database.CreditPostgresDataBase;
 import models.Credit;
 
 import java.sql.Date;
@@ -30,7 +31,7 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit> {
     public static CreditDatabaseConnector getInstance() {
         if (instance == null) {
             // TODO: временное решение проблемы с базами данных в CreditDatabaseConnector:
-            DataBase db = PostgresDataBase.getCreditServiceInstance();
+            DataBase db = CreditPostgresDataBase.getInstance();
             instance = new CreditDatabaseConnector(db);
         }
         return instance;

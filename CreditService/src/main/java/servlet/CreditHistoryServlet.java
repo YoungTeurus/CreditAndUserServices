@@ -1,11 +1,12 @@
 package servlet;
 
-import database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
 import modelconnectors.CreditDatabaseConnector;
 import modelconnectors.PaymentDatabaseConnector;
 import modelconnectors.UserDatabaseConnector;
 import models.Credit;
-import models.error.ErrorMessage;
+import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

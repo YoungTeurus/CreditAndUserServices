@@ -71,5 +71,6 @@ class CreditHistoryServletTest {
         );
 
         System.out.println(credits);
+        assertNotEquals(0, credits.size());
     }
 }

@@ -1,5 +1,7 @@
 package servlets;
 
+import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
+import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
 import com.google.gson.Gson;
 import config.Config;
 import jakarta.ws.rs.client.Client;
@@ -10,7 +12,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import models.Credit;
 import models.User;
-import models.error.ErrorMessage;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
