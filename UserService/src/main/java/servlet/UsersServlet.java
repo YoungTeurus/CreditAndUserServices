@@ -87,7 +87,6 @@ public class UsersServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: протестировать код добавления пользователей.
         request.setCharacterEncoding("UTF-8");
         User user = new Gson().fromJson(request.getReader(), User.class);
         try {

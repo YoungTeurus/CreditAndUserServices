@@ -3,10 +3,7 @@ package servlet;
 import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Invocation;
-import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import models.User;
@@ -17,6 +14,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +26,7 @@ class UsersServletTest {
 
     private String serviceURL = "http://localhost:8081/user";
 
-    private User connectAndGetSingleUser(String URL) {
+    private User GETAndGetSingleUser(String URL) {
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
         Invocation.Builder request = resource.request();
@@ -42,7 +40,7 @@ class UsersServletTest {
         return new Gson().fromJson(json, userType);
     }
 
-    private List<User> connectAndGetMultipleUsers(String URL){
+    private List<User> GETAndGetMultipleUsers(String URL){
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
         Invocation.Builder request = resource.request();
@@ -56,7 +54,7 @@ class UsersServletTest {
         return new Gson().fromJson(json, listType);
     }
 
-    private ErrorMessage connectAndGetError(String URL){
+    private ErrorMessage GETAndGetError(String URL){
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
         Invocation.Builder request = resource.request();
@@ -70,9 +68,31 @@ class UsersServletTest {
         return new Gson().fromJson(json, errorMessageType);
     }
 
+    private ErrorMessage POSTAndGetError(Object object, String URL){
+        String jsonObject = new Gson().toJson(object);
+
+        Client client = ClientBuilder.newClient();
+        WebTarget resource = client.target(URL);
+        Invocation.Builder request = resource.request();
+        request.accept(MediaType.APPLICATION_JSON);
+
+        // TODO: Здесь же мы отправляем POST-запрос?
+        // Было:
+        // Response response = request.get();
+        Response response = request.post(Entity.json(jsonObject));
+
+
+        response.bufferEntity();
+        String json = response.readEntity(String.class);
+
+        Type errorMessageType = new TypeToken<ErrorMessage>(){}.getType();
+
+        return new Gson().fromJson(json, errorMessageType);
+    }
+
     @Test
     public void getUserById() {
-        User user = connectAndGetSingleUser(serviceURL +
+        User user = GETAndGetSingleUser(serviceURL +
                 "?id=1"
         );
 
@@ -91,7 +111,7 @@ class UsersServletTest {
     @Test
     public void getUserByFirstnameSurnameAndPassport() {
         // Пробел замещается символом "%20"
-        User user = connectAndGetSingleUser(serviceURL +
+        User user = GETAndGetSingleUser(serviceURL +
                 "?firstname=TESTUSER1&surname=TESTUSER1&passportNumber=1234%20567890"
         );
 
@@ -109,8 +129,8 @@ class UsersServletTest {
 
     @Test
     public void getAllUsers(){
-        List<User> users = connectAndGetMultipleUsers(serviceURL +
-                "?getAll=1"
+        List<User> users = GETAndGetMultipleUsers(
+                serviceURL + "?getAll=1"
         );
         System.out.println(users);
 
@@ -119,7 +139,7 @@ class UsersServletTest {
 
     @Test
     public void getErrorWithoutParameters(){
-        ErrorMessage errorMessage = connectAndGetError(
+        ErrorMessage errorMessage = GETAndGetError(
                 serviceURL
         );
 
@@ -131,8 +151,8 @@ class UsersServletTest {
 
     @Test
     public void getErrorNotEnoughParameters(){
-        ErrorMessage errorMessage = connectAndGetError(
-                "http://localhost:8080/user?firstname=TESTUSER1"
+        ErrorMessage errorMessage = GETAndGetError(
+                serviceURL + "?firstname=TESTUSER1"
         );
 
         System.out.println(errorMessage);
@@ -143,7 +163,7 @@ class UsersServletTest {
 
     @Test
     public void getErrorBadId(){
-        ErrorMessage errorMessage = connectAndGetError(
+        ErrorMessage errorMessage = GETAndGetError(
                 "http://localhost:8080/user?id=QWERTY"
         );
 
@@ -151,5 +171,22 @@ class UsersServletTest {
 
         assertNotNull(errorMessage);
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, errorMessage.getError());
+    }
+
+    @Test
+    public void addUser(){
+        final Random random = new Random();
+        final User testUser = new User.Builder("TEST_USER")
+                .driverLicenceId(String.valueOf(random.nextInt()))
+                .creditServiceId(random.nextLong())
+                .build();
+
+        ErrorMessage errorMessage = POSTAndGetError(
+                testUser,
+                serviceURL
+        );
+
+        System.out.println(errorMessage);
+        assertEquals(HttpServletResponse.SC_OK, errorMessage.getError());
     }
 }

@@ -6,7 +6,6 @@ import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.database.constructor.StringParameter;
 import modelconnectors.UserDatabaseConnector;
 import models.User;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -15,11 +14,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UserDatabaseConnectorTest {
     private final Random random = new Random();
-    private final User testUser = new User.Builder("TEST_USER").driverLicenceId(String.valueOf(random.nextInt())).build();
+    private final User testUser = new User.Builder("TEST_USER")
+            .driverLicenceId(String.valueOf(random.nextInt()))
+            .creditServiceId(random.nextLong())
+            .build();
 
     private final UserDatabaseConnector udb = UserDatabaseConnector.getInstance();
 
@@ -34,19 +36,6 @@ class UserDatabaseConnectorTest {
         List<User> users = udb.getAll();
         System.out.println(users);
     }
-
-//    @Test
-//    void add() throws SQLException, DataBaseConnectionException {
-//        String addedDriverLicenceId = testUser.getDriverLicenceId();
-//
-//        long addedId = udb.addAndReturnId(testUser);
-//        System.out.println("Added user with ID =" + addedId);
-//
-//        User addedUser = udb.getById(addedId);
-//        assertNotNull(addedUser);
-//        System.out.println("addedUser: " + addedUser);
-//        Assertions.assertEquals(addedDriverLicenceId, addedUser.getDriverLicenceId());
-//    }
 
     @Test
     void getByParameters(){
@@ -120,5 +109,22 @@ class UserDatabaseConnectorTest {
         }
 
         return users;
+    }
+
+    @Test
+    void add() throws SQLException, DataBaseConnectionException {
+        String addedDriverLicenceId = testUser.getDriverLicenceId();
+        long addedCreditServiceId = testUser.getCreditServiceId();
+        System.out.println("Adding user:");
+        System.out.println(testUser);
+
+        long addedId = udb.addAndReturnId(testUser);
+        System.out.println("Added user with ID =" + addedId);
+
+        User addedUser = udb.getById(addedId);
+        assertNotNull(addedUser);
+        System.out.println("addedUser: " + addedUser);
+        assertEquals(addedDriverLicenceId, addedUser.getDriverLicenceId());
+        assertEquals(addedCreditServiceId, addedUser.getCreditServiceId());
     }
 }
