@@ -3,6 +3,7 @@ package servlets;
 import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import config.Config;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -15,35 +16,90 @@ import models.User;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name="main", urlPatterns = "/")
 public class MainServlet extends BaseServlet {
 
     @Override
     protected Object processParameters() {
-        String passport = getRequestParameterValue("passport");
-        return handle(passport);
+        String firstname = getRequestParameterValue("firstname");
+        String surname = getRequestParameterValue("surname");
+        String passport = getRequestParameterValue("passportNumber");
+        String driverID = getRequestParameterValue("driverID");
+        String taxID = getRequestParameterValue("taxID");
+        return handle(firstname, surname, passport, driverID, taxID);
     }
 
-    private Object handle(String passport) {
-        if (passport != null) {
-            String json = connectAndGet(Config.getUsersURL() + "?passport=" + passport);
-            User user = new Gson().fromJson(json, User.class);
-            if (user == null) {
-                return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователя с данными паспортными данными не найдено!");
+    private Object handle(String firstname, String surname, String passport, String driverID, String taxID) {
+        List<Object> result = new ArrayList<>();
+        if (isFullNameCorrect(firstname, surname)) {
+            User user = getUserByIds(firstname, surname, passport ,driverID, taxID);
+            result.add(user);
+            if (user != null) {
+                System.out.println(user);
+                List<Credit> credit = getCreditInfoByUser(user);
+                System.out.println(credit);
+                if (credit == null) {
+                    result.add(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь не найден в сервисе кредитных историй."));
+                } else {
+                    result.add(credit);
+                }
+                return result;
             } else {
-                return getCreditInfoByUser(user);
+                return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь с данными индификационными данными не найден.");
+            }
+        } else {
+            return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST, "Не указано ФИО.");
+        }
+    }
+
+    private User getUserByIds(String firstname, String surname, String passport, String driverID, String taxID) {
+        User user = null;
+        if (passport != null) {
+            user = findByFullNameAndPassport(firstname,surname,passport);
+        }
+        if (user == null) {
+            if (driverID != null) {
+                user = findByFullNameAndDriverId(firstname,surname,driverID);
             }
         }
-        return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST, "Укажите номер паспорта для поиска.");
+        if (user == null) {
+            user = findByFullNameAndTaxID(firstname,surname,taxID);
+        }
+        return user;
     }
 
-    private Object getCreditInfoByUser(User user) {
-        Credit credit = new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getId()), Credit.class);
-        if (credit == null) {
-            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Записей о кредитах для данного пользователя не нейдено!");
+    private User findByFullNameAndPassport(String firstname, String surname, String passport) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&passportNumber=" + passport);
+        return new Gson().fromJson(json, User.class);
+    }
+
+    private User findByFullNameAndDriverId(String firstname, String surname, String driverID) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&driverID=" + driverID);
+        return new Gson().fromJson(json, User.class);
+    }
+
+    private User findByFullNameAndTaxID(String firstname, String surname, String taxID) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&taxID=" + taxID);
+        return new Gson().fromJson(json, User.class);
+    }
+
+    private boolean isFullNameCorrect(String firstname, String surname) {
+        if (firstname == null) {
+            return false;
+        } else if (surname == null) {
+            return false;
+        } else {
+            return true;
         }
-        return credit;
+    }
+
+    private List<Credit> getCreditInfoByUser(User user) {
+        Type listType = new TypeToken<ArrayList<Credit>>(){}.getType();
+        return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=1"), listType);
     }
 
     private String connectAndGet(String path) {

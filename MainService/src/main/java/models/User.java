@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 public class User extends AbstractModel {
     private final long id;
+    private final long creditServiceId;
     private final String firstname;
     private final String surname;
     private final LocalDate birthDate;
@@ -18,6 +19,7 @@ public class User extends AbstractModel {
         // Дефолтные поля
         private final String firstname;
         private long id = 0;
+        private long creditServiceId = 0;
         private String surname = "";
         private LocalDate birthDate = LocalDate.now();
         private Sex sex;
@@ -36,6 +38,11 @@ public class User extends AbstractModel {
 
         public Builder id(long id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder creditServiceId(long creditServiceId){
+            this.creditServiceId = creditServiceId;
             return this;
         }
 
@@ -76,6 +83,7 @@ public class User extends AbstractModel {
 
     private User(Builder builder) {
         this.id = builder.id;
+        this.creditServiceId = builder.creditServiceId;
         this.birthDate = builder.birthDate;
         this.driverLicenceId = builder.driverLicenceId;
         this.sex = builder.sex;
@@ -87,6 +95,10 @@ public class User extends AbstractModel {
 
     public long getId() {
         return id;
+    }
+
+    public long getCreditServiceId(){
+        return creditServiceId;
     }
 
     public String getFirstname() {
@@ -119,8 +131,9 @@ public class User extends AbstractModel {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserServiceUser{" +
                 "id=" + id +
+                ", creditServiceId=" + creditServiceId +
                 ", firstname='" + firstname + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthDate=" + birthDate +
@@ -131,3 +144,4 @@ public class User extends AbstractModel {
                 '}';
     }
 }
+
