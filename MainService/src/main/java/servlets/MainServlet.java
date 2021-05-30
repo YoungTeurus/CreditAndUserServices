@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import models.Credit;
 import models.User;
+import models.out.UserCredit;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +46,7 @@ public class MainServlet extends BaseServlet {
                 if (credit == null) {
                     result.add(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь не найден в сервисе кредитных историй."));
                 } else {
-                    result.add(credit);
+                    return new UserCredit(user, credit);
                 }
                 return result;
             } else {
