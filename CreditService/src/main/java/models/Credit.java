@@ -8,7 +8,6 @@ import java.time.LocalDate;
 public class Credit extends AbstractModel {
     private final long id;
     private final long userId;
-    private final long branchId;
     private final BigDecimal totalSum;
     private final LocalDate startPaymentDate;
     private final LocalDate endPaymentDate;
@@ -16,7 +15,6 @@ public class Credit extends AbstractModel {
     public static class Builder {
         private long id = 0;
         private long userId = 0;
-        private long branchId = 0;
         private BigDecimal totalSum = new BigDecimal("0.0");
         private LocalDate startPaymentDate = LocalDate.now();
         private LocalDate endPaymentDate = LocalDate.now();
@@ -28,11 +26,6 @@ public class Credit extends AbstractModel {
 
         public Builder userId(long userId) {
             this.userId = userId;
-            return this;
-        }
-
-        public Builder branchId(long branchId) {
-            this.branchId = branchId;
             return this;
         }
 
@@ -59,7 +52,6 @@ public class Credit extends AbstractModel {
     private Credit(Builder builder) {
         this.id = builder.id;
         this.userId = builder.userId;
-        this.branchId = builder.branchId;
         this.totalSum = builder.totalSum;
         this.startPaymentDate = builder.startPaymentDate;
         this.endPaymentDate = builder.endPaymentDate;
@@ -67,10 +59,6 @@ public class Credit extends AbstractModel {
 
     public long getUserId() {
         return userId;
-    }
-
-    public long getBranchId() {
-        return branchId;
     }
 
     public BigDecimal getTotalSum() {
@@ -95,7 +83,6 @@ public class Credit extends AbstractModel {
         return "Credit{" +
                 "id=" + id +
                 ", userId=" + userId +
-                ", branchId=" + branchId +
                 ", totalSum=" + totalSum +
                 ", startPaymentDate=" + startPaymentDate +
                 ", endPaymentDate=" + endPaymentDate +

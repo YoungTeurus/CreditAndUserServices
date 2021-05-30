@@ -64,7 +64,6 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit> {
         params.add(new BigDecimalParameter("totalSum", credit.getTotalSum()));
         params.add(new DateParameter("startPaymentDate", Date.valueOf(credit.getStartPaymentDate())));
         params.add(new DateParameter("endPaymentDate", Date.valueOf(credit.getEndPaymentDate())));
-        params.add(new LongParameter("branchId", credit.getBranchId()));
 
         return params;
     }

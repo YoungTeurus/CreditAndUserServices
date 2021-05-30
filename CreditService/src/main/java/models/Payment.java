@@ -2,15 +2,16 @@ package models;
 
 import com.github.youngteurus.servletdatabase.models.AbstractModel;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Payment extends AbstractModel {
     private long id;
     private long creditId;
-    private double sum;
+    private BigDecimal sum;
     private LocalDate date;
 
-    public Payment(long id, long creditId, double sum, LocalDate date) {
+    public Payment(long id, long creditId, BigDecimal sum, LocalDate date) {
         this.id = id;
         this.creditId = creditId;
         this.sum = sum;
@@ -26,7 +27,7 @@ public class Payment extends AbstractModel {
         return creditId;
     }
 
-    public double getSum() {
+    public BigDecimal getSum() {
         return sum;
     }
 

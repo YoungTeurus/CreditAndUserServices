@@ -2,10 +2,7 @@ package modelconnectors;
 
 import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
-import com.github.youngteurus.servletdatabase.database.constructor.DateParameter;
-import com.github.youngteurus.servletdatabase.database.constructor.DoubleParameter;
-import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
-import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
+import com.github.youngteurus.servletdatabase.database.constructor.*;
 import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
 import database.CreditPostgresDataBase;
 import models.Payment;
@@ -46,7 +43,7 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment> {
             returnPayment = new Payment(
                     rs.getLong("id"),
                     rs.getLong("creditId"),
-                    rs.getDouble("sum"),
+                    rs.getBigDecimal("sum"),
                     rs.getDate("date").toLocalDate()
             );
         } catch (SQLException e) {
@@ -60,7 +57,7 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment> {
         List<Parameter> params = new ArrayList<>();
 
         params.add(new LongParameter("creditId", payment.getCreditId()));
-        params.add(new DoubleParameter("sum", payment.getSum()));
+        params.add(new BigDecimalParameter("sum", payment.getSum()));
         params.add(new DateParameter("date", Date.valueOf(payment.getDate())));
 
         return params;
