@@ -1,10 +1,11 @@
 package modelconnectors;
 
 
-import database.DataBase;
-import database.DataBaseConnectionException;
-import database.PostgresDataBase;
-import database.constructor.Parameter;
+import com.github.youngteurus.servletdatabase.database.DataBase;
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
+import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import database.UserPostgresDataBase;
 import models.Sex;
 
 import java.sql.ResultSet;
@@ -26,7 +27,7 @@ public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
     public static SexDatabaseConnector getInstance() {
         if (instance == null) {
             // TODO: временное решение проблемы с базами данных в SexDatabaseConnector:
-            DataBase db = PostgresDataBase.getUserServiceInstance();
+            DataBase db = UserPostgresDataBase.getInstance();
             instance = new SexDatabaseConnector(db);
         }
         return instance;

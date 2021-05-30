@@ -1,5 +1,6 @@
 package servlet;
 
+import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import config.Config;
@@ -10,7 +11,6 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import models.User;
-import models.error.ErrorMessage;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletResponse;

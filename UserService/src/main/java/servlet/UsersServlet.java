@@ -1,10 +1,11 @@
 package servlet;
 
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
+import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
 import com.google.gson.Gson;
-import database.DataBaseConnectionException;
 import modelconnectors.UserDatabaseConnector;
 import models.User;
-import models.error.ErrorMessage;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

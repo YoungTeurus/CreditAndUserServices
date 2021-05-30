@@ -1,4 +1,4 @@
-import database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import modelconnectors.SexDatabaseConnector;
 import modelconnectors.UserDatabaseConnector;
 import models.Sex;

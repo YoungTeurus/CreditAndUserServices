@@ -1,5 +1,6 @@
 package models;
 
+import com.github.youngteurus.servletdatabase.models.AbstractModel;
 import modelconnectors.SexDatabaseConnector;
 
 import java.time.LocalDate;

@@ -1,9 +1,8 @@
-package constructor;
+package com.github.youngteurus.servletdatabase.database.constructor;
 
-import database.DataBase;
-import database.DataBaseConnectionException;
-import database.PostgresDataBase;
-import database.constructor.*;
+import com.github.youngteurus.servletdatabase.database.DataBase;
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import database.UserPostgresDataBase;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -30,7 +29,7 @@ class StatementConstructorTest {
         String sql = StatementConstructor.constructSelectSQLQuery(tableName, params);
 
         System.out.println(sql);
-        assertEquals("SELECT * FROM public.\"users\" WHERE param_1 = ? AND param_2 = ? AND param_3 = ?", sql);
+        assertEquals("SELECT * FROM public.\"users\" WHERE \"param_1\" = ? AND \"param_2\" = ? AND \"param_3\" = ?", sql);
     }
 
     @Test
@@ -51,7 +50,7 @@ class StatementConstructorTest {
 
     @Test
     void constructSelectStatementFromParametersList() throws SQLException, DataBaseConnectionException {
-        DataBase db = PostgresDataBase.getInstance();
+        DataBase db = UserPostgresDataBase.getInstance();
         Connection connection = db.getConnection();
 
         List<Parameter> params = new ArrayList<>();
@@ -65,12 +64,12 @@ class StatementConstructorTest {
         PreparedStatement ps = StatementConstructor.constructSelectStatementFromParametersList(connection, tableName, params);
 
         System.out.println(ps.toString());
-        assertEquals("SELECT * FROM public.\"users\" WHERE param_1 = 'value_1' AND param_2 = 200000 AND param_3 = '2000-12-12 +03'", ps.toString());
+        assertEquals("SELECT * FROM public.\"users\" WHERE \"param_1\" = 'value_1' AND \"param_2\" = 200000 AND \"param_3\" = '2000-12-12 +03'", ps.toString());
     }
 
     @Test
     void constructInsertStatementFromParametersList() throws DataBaseConnectionException, SQLException {
-        DataBase db = PostgresDataBase.getInstance();
+        DataBase db = UserPostgresDataBase.getInstance();
         Connection connection = db.getConnection();
 
         List<Parameter> params = new ArrayList<>();

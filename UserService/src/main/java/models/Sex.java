@@ -1,6 +1,6 @@
 package models;
 
-import models.AbstractModel;
+import com.github.youngteurus.servletdatabase.models.AbstractModel;
 
 public class Sex extends AbstractModel {
     private final long id;

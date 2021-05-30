@@ -1,9 +1,9 @@
 package modelconnector;
 
-import database.DataBaseConnectionException;
-import database.constructor.LongParameter;
-import database.constructor.Parameter;
-import database.constructor.StringParameter;
+import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
+import com.github.youngteurus.servletdatabase.database.constructor.StringParameter;
 import modelconnectors.UserDatabaseConnector;
 import models.User;
 import org.junit.jupiter.api.Assertions;
