@@ -9,18 +9,30 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jetty.Jetty;
 import models.Credit;
 import models.User;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class MainServletTest {
+
+    @BeforeAll
+    static void init()  {
+        (new Thread(() -> {
+            try {
+                Jetty.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        })).start();
+    }
+
     @Test
     public void getUserAndCreditsByFullNameAndPassport() {
         User user = findByFullNameAndPassport("TESTUSER1", "TESTUSER1", "1234567890");

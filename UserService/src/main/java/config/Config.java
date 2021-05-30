@@ -1,5 +1,6 @@
 package config;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -11,6 +12,7 @@ public class Config {
     private String UserServiceDBHost;
     private String UserServiceDBLogin;
     private String UserServiceDBPass;
+    private String port;
 
     private Config() {
         if (instance == null) {
@@ -22,11 +24,17 @@ public class Config {
     private void load() {
         Properties property = new Properties();
         try {
-            property.load(new FileInputStream("../UserService/src/main/resources/UserService.properties"));
+            // Для тестов, иначе не находит
+            if (!new File("UserService/src/main/resources/UserService.properties").exists()) {
+                property.load(new FileInputStream("../UserService/src/main/resources/UserService.properties"));
+            } else {
+                property.load(new FileInputStream("UserService/src/main/resources/UserService.properties"));
+            }
 
             this.UserServiceDBHost = property.getProperty("userService.db.host");
             this.UserServiceDBLogin = property.getProperty("userService.db.user");
             this.UserServiceDBPass = property.getProperty("userService.db.password");
+            this.port = property.getProperty("userService.port");
 
         } catch (IOException e) {
             System.err.println("ОШИБКА: Файл свойств отсуствует! (Users)");
@@ -52,6 +60,11 @@ public class Config {
     public static String getUserServiceDBPass() {
         createInstanceIfNotCreated();
         return instance.UserServiceDBPass;
+    }
+
+    public static String getPort() {
+        createInstanceIfNotCreated();
+        return instance.port;
     }
 
 }

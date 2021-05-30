@@ -8,11 +8,14 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jetty.Jetty;
 import models.Credit;
 import models.Payment;
 import models.User;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +23,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CreditHistoryServletTest {
-    // TODO: ПЕРЕД ЗАПУСКОМ ТЕСТОВ ЗАПУСКАТЬ JETTY:RUN.
+
+    @BeforeAll
+    static void init()  {
+        (new Thread(() -> {
+            try {
+                Jetty.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        })).start();
+    }
 
     private String serviceURL = "http://localhost:8080/credit";
 
@@ -67,7 +80,7 @@ class CreditHistoryServletTest {
     }
 
     @Test
-    void getCreditsByUserId(){
+    void getCreditsByUserId() {
         List<Credit> credits = connectAndGetArrayListOfCredits(
                 serviceURL + "?controlValue=1&userId=1"
         );

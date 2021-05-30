@@ -6,7 +6,9 @@ import com.google.gson.reflect.TypeToken;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jetty.Jetty;
 import models.User;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,10 +21,16 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UsersServletTest {
-    // TODO: ПЕРЕД ЗАПУСКОМ ТЕСТОВ ЗАПУСКАТЬ JETTY:RUN.
-
-    // TODO: ЛОВИТСЯ ПЛАВАЮЩИЙ БАГ:
-    //  ПРИ ПЕРВОМ ЗАПУСКЕ ТЕСТОВ КАЖДЫЙ ЗАПРОС ВОЗВРАЩАЕТ NULL.
+    @BeforeAll
+    static void init()  {
+        (new Thread(() -> {
+            try {
+                Jetty.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        })).start();
+    }
 
     private String serviceURL = "http://localhost:8081/user";
 
@@ -103,16 +111,15 @@ class UsersServletTest {
         assertEquals("TESTUSER1", user.getFirstname());
         assertEquals("TESTUSER1", user.getSurname());
         assertEquals("QWERTY-12", user.getDriverLicenceId());
-        assertEquals("1234 567890", user.getPassportNumber());
+        assertEquals("1234567890", user.getPassportNumber());
         assertEquals("123456789012", user.getTaxPayerID());
         assertEquals(1, user.getSex().getId());
     }
 
     @Test
     public void getUserByFirstnameSurnameAndPassport() {
-        // Пробел замещается символом "%20"
         User user = GETAndGetSingleUser(serviceURL +
-                "?firstname=TESTUSER1&surname=TESTUSER1&passportNumber=1234%20567890"
+                "?firstname=TESTUSER1&surname=TESTUSER1&passportNumber=1234567890"
         );
 
         System.out.println(user);
@@ -122,7 +129,7 @@ class UsersServletTest {
         assertEquals("TESTUSER1", user.getFirstname());
         assertEquals("TESTUSER1", user.getSurname());
         assertEquals("QWERTY-12", user.getDriverLicenceId());
-        assertEquals("1234 567890", user.getPassportNumber());
+        assertEquals("1234567890", user.getPassportNumber());
         assertEquals("123456789012", user.getTaxPayerID());
         assertEquals(1, user.getSex().getId());
     }
@@ -164,7 +171,7 @@ class UsersServletTest {
     @Test
     public void getErrorBadId(){
         ErrorMessage errorMessage = GETAndGetError(
-                "http://localhost:8080/user?id=QWERTY"
+                serviceURL + "?id=QWERTY"
         );
 
         System.out.println(errorMessage);

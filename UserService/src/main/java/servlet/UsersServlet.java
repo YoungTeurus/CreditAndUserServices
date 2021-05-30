@@ -66,7 +66,6 @@ public class UsersServlet extends BaseServlet {
             return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST,
                     "Параметр 'id' содержал неверные данные. Проверьте правильность данных и повторите запрос.");
         }
-
         User user = repos.getById(parsedId);
         if (user == null) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
