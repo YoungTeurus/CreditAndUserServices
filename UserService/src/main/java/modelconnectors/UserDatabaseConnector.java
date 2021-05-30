@@ -123,6 +123,28 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return foundUsers;
     }
 
+    public final List<User> getByFirstnameSurnameAndDriverId(String firstname, String surname, String driverID) throws SQLException, DataBaseConnectionException {
+        List<Parameter> params = new ArrayList<>();
+        params.add(new StringParameter("firstname", firstname));
+        params.add(new StringParameter("surname", surname));
+        params.add(new StringParameter("driver_licence_id", driverID));
+
+        List<User> foundUsers = getByParameters(params);
+
+        return foundUsers;
+    }
+
+    public final List<User> getByFirstnameSurnameAndTaxID(String firstname, String surname, String taxID) throws SQLException, DataBaseConnectionException {
+        List<Parameter> params = new ArrayList<>();
+        params.add(new StringParameter("firstname", firstname));
+        params.add(new StringParameter("surname", surname));
+        params.add(new StringParameter("tax_payer_id", taxID));
+
+        List<User> foundUsers = getByParameters(params);
+
+        return foundUsers;
+    }
+
     private Sex getSexById(int id){
         Sex returnSex = null;
         try {

@@ -26,6 +26,8 @@ public class UsersServlet extends BaseServlet {
         String firstname = getRequestParameterValue("firstname");
         String surname = getRequestParameterValue("surname");
         String passportNumber = getRequestParameterValue("passportNumber");
+        String driverID = getRequestParameterValue("driverID");
+        String taxID = getRequestParameterValue("taxID");
 
         String getAll = getRequestParameterValue("getAll");
 
@@ -35,6 +37,10 @@ public class UsersServlet extends BaseServlet {
                 result = getUserById(id);
             } else if (firstname != null && surname != null && passportNumber != null){
                 result = getUserByFirstnameSurnameAndPassport(firstname, surname, passportNumber);
+            } else if (firstname != null && surname != null && driverID != null) {
+                result = getUserByFirstnameSurnameAndDriverID(firstname, surname, driverID);
+            } else if (firstname != null && surname != null && taxID != null) {
+                result = getUserByFirstnameSurnameAndTaxID(firstname, surname, taxID);
             } else if (getAll != null && getAll.equals("1")) {
                 result = getAllUsers();
             } else {
@@ -74,6 +80,28 @@ public class UsersServlet extends BaseServlet {
         if (users.isEmpty()) {
             return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                     "Пользователь с заданным именем, фамилией и пасспортными данными не найден.");
+        }
+        // TODO: возможность того, что найденных пользователей окажется больше 1-го всё-ещё сохраняется.
+        //  Возможно всё-таки стоит возвращать список всех пользователей, запрашивая у пользователя уточнение по ID.
+        return users.get(0);
+    }
+
+    private Object getUserByFirstnameSurnameAndDriverID(String firstname, String surname, String driverId) throws SQLException, DataBaseConnectionException {
+        List<User> users = repos.getByFirstnameSurnameAndDriverId(firstname, surname, driverId);
+        if (users.isEmpty()) {
+            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                    "Пользователь с заданным именем, фамилией и водительским не найден.");
+        }
+        // TODO: возможность того, что найденных пользователей окажется больше 1-го всё-ещё сохраняется.
+        //  Возможно всё-таки стоит возвращать список всех пользователей, запрашивая у пользователя уточнение по ID.
+        return users.get(0);
+    }
+
+    private Object getUserByFirstnameSurnameAndTaxID(String firstname, String surname, String taxID) throws SQLException, DataBaseConnectionException {
+        List<User> users = repos.getByFirstnameSurnameAndTaxID(firstname, surname, taxID);
+        if (users.isEmpty()) {
+            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                    "Пользователь с заданным именем, фамилией и ИНН не найден.");
         }
         // TODO: возможность того, что найденных пользователей окажется больше 1-го всё-ещё сохраняется.
         //  Возможно всё-таки стоит возвращать список всех пользователей, запрашивая у пользователя уточнение по ID.

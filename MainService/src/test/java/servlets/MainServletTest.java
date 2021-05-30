@@ -22,8 +22,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MainServletTest {
     @Test
-    public void getUserAndCredits() {
+    public void getUserAndCreditsByFullNameAndPassport() {
         User user = findByFullNameAndPassport("TESTUSER1", "TESTUSER1", "1234567890");
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals(1, user.getId());
+        List<Credit> creditList = getCreditInfoByUser(user);
+        for (Credit credit : creditList) {
+            Assertions.assertEquals(1, credit.getUserId());
+        }
+    }
+
+    @Test
+    public void getUserAndCreditsByFullNameAndDriverId() {
+        User user = findByFullNameAndDriverId("TESTUSER1", "TESTUSER1", "QWERTY-12");
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals(1, user.getId());
+        List<Credit> creditList = getCreditInfoByUser(user);
+        for (Credit credit : creditList) {
+            Assertions.assertEquals(1, credit.getUserId());
+        }
+    }
+
+    @Test
+    public void getUserAndCreditsByFullNameAndTaxId() {
+        User user = findByFullNameAndTaxId("TESTUSER1", "TESTUSER1", "123456789012");
         Assertions.assertNotNull(user);
         Assertions.assertEquals(1, user.getId());
         List<Credit> creditList = getCreditInfoByUser(user);
@@ -39,6 +61,16 @@ class MainServletTest {
 
     private User findByFullNameAndPassport(String firstname, String surname, String passport) {
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&passportNumber=" + passport);
+        return new Gson().fromJson(json, User.class);
+    }
+
+    private User findByFullNameAndDriverId(String firstname, String surname, String driverID) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&driverID=" + driverID);
+        return new Gson().fromJson(json, User.class);
+    }
+
+    private User findByFullNameAndTaxId(String firstname, String surname, String taxID) {
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname + "&taxID=" + taxID);
         return new Gson().fromJson(json, User.class);
     }
 
