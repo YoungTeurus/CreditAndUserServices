@@ -14,6 +14,10 @@ public class Config {
     private String creditsURL;
     private String port;
 
+    private String securePhrase;
+    private String usersSecurePhrase;
+    private String creditsSecurePhrase;
+
     private Config() {
         if (instance == null) {
             instance = this;
@@ -31,6 +35,9 @@ public class Config {
                     writer.write("users.url = \n");
                     writer.write("credits.url = \n");
                     writer.write("main.port = \n");
+                    writer.write("users.securePhrase = \n");
+                    writer.write("credits.securePhrase = \n");
+                    writer.write("main.securePhrase = \n");
                     writer.flush();
                 }
                 throw new RuntimeException("Файла конфигурации не существовало, он был создан. Задайте значения");
@@ -40,6 +47,10 @@ public class Config {
             this.usersURL = property.getProperty("users.url");
             this.creditsURL = property.getProperty("credits.url");
             this.port = property.getProperty("main.port");
+
+            this.securePhrase = property.getProperty("main.securePhrase");
+            this.usersSecurePhrase = property.getProperty("users.securePhrase");
+            this.creditsSecurePhrase = property.getProperty("credits.securePhrase");
 
         } catch (IOException e) {
             System.err.println("ОШИБКА: Файл свойств отсуствует! (Main)");
@@ -65,6 +76,21 @@ public class Config {
     public static String getPort() {
         createInstanceIfNotCreated();
         return instance.port;
+    }
+
+    public static String getSecurePhrase() {
+        createInstanceIfNotCreated();
+        return instance.securePhrase;
+    }
+
+    public static String getUsersSecurePhrase() {
+        createInstanceIfNotCreated();
+        return instance.usersSecurePhrase;
+    }
+
+    public static String getCreditsSecurePhrase() {
+        createInstanceIfNotCreated();
+        return instance.creditsSecurePhrase;
     }
 }
 

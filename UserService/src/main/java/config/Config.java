@@ -15,6 +15,7 @@ public class Config {
     private String UserServiceDBLogin;
     private String UserServiceDBPass;
     private String port;
+    private String securePhrase;
 
     private Config() {
         if (instance == null) {
@@ -34,6 +35,7 @@ public class Config {
                     writer.write("userService.db.user = \n");
                     writer.write("userService.db.password = \n");
                     writer.write("userService.port = \n");
+                    writer.write("userService.securePhrase = \n");
                     writer.flush();
                 }
                 throw new RuntimeException("Файла конфигурации не существовало, он был создан. Задайте значения");
@@ -44,6 +46,7 @@ public class Config {
             this.UserServiceDBLogin = property.getProperty("userService.db.user");
             this.UserServiceDBPass = property.getProperty("userService.db.password");
             this.port = property.getProperty("userService.port");
+            this.securePhrase = property.getProperty("userService.securePhrase");
 
         } catch (IOException e) {
             System.err.println("ОШИБКА: Файл свойств отсуствует! (Users)");
@@ -74,6 +77,11 @@ public class Config {
     public static String getPort() {
         createInstanceIfNotCreated();
         return instance.port;
+    }
+
+    public static String getSecurePhrase() {
+        createInstanceIfNotCreated();
+        return instance.securePhrase;
     }
 
 }

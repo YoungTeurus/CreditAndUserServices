@@ -2,6 +2,8 @@ package servlet;
 
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
+import com.google.common.hash.Hashing;
+import config.Config;
 import modelconnectors.CreditDatabaseConnector;
 import modelconnectors.PaymentDatabaseConnector;
 import modelconnectors.UserDatabaseConnector;
@@ -13,7 +15,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @WebServlet(name="credits", urlPatterns = "/")
@@ -31,9 +35,9 @@ public class CreditHistoryServlet extends BaseServlet {
 
         try {
             if (userId != null) {
-                boolean isOperationIllegal = ! checkIfOperationLegalUsingControlValueAndUserId(userId, controlValue);
+                boolean isOperationIllegal = ! checkIfOperationLegalUsingControlValueAndUserId(controlValue);
                 if (isOperationIllegal){
-                    result = new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                    result = new ErrorMessage(HttpServletResponse.SC_FORBIDDEN,
                             "Передано неверное контрольное значение: " + controlValue + ". Проверьте правильность данных и повторите запрос.");
                 } else {
                     result = getUserCreditHistoryById(userId);
@@ -53,12 +57,15 @@ public class CreditHistoryServlet extends BaseServlet {
         return result;
     }
 
-    private boolean checkIfOperationLegalUsingControlValueAndUserId(String userId, String controlValue){
+    private boolean checkIfOperationLegalUsingControlValueAndUserId(String controlValue){
         if (controlValue == null){
             return false;
         }
-        // TODO: придумать проверку для контрольного значения.
-        return controlValue.equals("1");
+        String code = Config.getSecurePhrase() + LocalDate.now();
+        String encrypted = Hashing.sha256()
+                .hashString(code, StandardCharsets.UTF_8)
+                .toString();
+        return controlValue.equals(encrypted);
     }
 
     private Object getUserCreditHistoryById(String userId) throws SQLException, DataBaseConnectionException {

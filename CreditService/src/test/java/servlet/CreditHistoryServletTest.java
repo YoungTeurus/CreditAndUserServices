@@ -1,7 +1,9 @@
 package servlet;
 
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import config.Config;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
@@ -17,6 +19,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +40,15 @@ class CreditHistoryServletTest {
     }
 
     private String serviceURL = "http://localhost:8080/credit";
+
+    private String calculateControlValue() {
+        String code = Config.getSecurePhrase();
+        String value = code + LocalDate.now();
+        String encrypted = Hashing.sha256()
+                .hashString(value, StandardCharsets.UTF_8)
+                .toString();
+        return encrypted;
+    }
 
     private User connectAndGetUser(String URL){
         Client client = ClientBuilder.newClient();
@@ -82,7 +95,7 @@ class CreditHistoryServletTest {
     @Test
     void getCreditsByUserId() {
         List<Credit> credits = connectAndGetArrayListOfCredits(
-                serviceURL + "?controlValue=1&userId=1"
+                serviceURL + "?userId=1" + "&controlValue=" + calculateControlValue()
         );
 
         System.out.println(credits);

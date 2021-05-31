@@ -1,5 +1,6 @@
 package servlets;
 
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import config.Config;
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,14 @@ class MainServletTest {
                 e.printStackTrace();
             }
         })).start();
+    }
+
+    private String calculateControlValue(String code) {
+        String value = code + LocalDate.now();
+        String encrypted = Hashing.sha256()
+                .hashString(value, StandardCharsets.UTF_8)
+                .toString();
+        return encrypted;
     }
 
     @Test
@@ -84,24 +95,24 @@ class MainServletTest {
 
     private List<Credit> getCreditInfoByUser(User user) {
         Type listType = new TypeToken<ArrayList<Credit>>(){}.getType();
-        return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=1"), listType);
+        return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=" + calculateControlValue(Config.getCreditsSecurePhrase()) ), listType);
     }
 
     private User findByFullNameAndPassport(String firstname, String surname, String patronymic, String passport) {
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                 + "&patronymic=" + patronymic + "&passportNumber=" + passport);
+                 + "&patronymic=" + patronymic + "&passportNumber=" + passport + "&controlValue=" + calculateControlValue(Config.getUsersSecurePhrase()));
         return new Gson().fromJson(json, User.class);
     }
 
     private User findByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID) {
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&driverID=" + driverID);
+                + "&patronymic=" + patronymic + "&driverID=" + driverID + "&controlValue=" + calculateControlValue(Config.getUsersSecurePhrase()));
         return new Gson().fromJson(json, User.class);
     }
 
     private User findByFullNameAndTaxId(String firstname, String surname, String patronymic, String taxID) {
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&taxID=" + taxID);
+                + "&patronymic=" + patronymic + "&taxID=" + taxID + "&controlValue=" + calculateControlValue(Config.getUsersSecurePhrase()));
         return new Gson().fromJson(json, User.class);
     }
 

@@ -1,8 +1,10 @@
 package servlet;
 
 import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import config.Config;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +37,17 @@ class UsersServletTest {
 
     private String serviceURL = "http://localhost:8081/user";
 
+    private String calculateControlValue() {
+        String code = Config.getSecurePhrase();
+        String value = code + LocalDate.now();
+        String encrypted = Hashing.sha256()
+                .hashString(value, StandardCharsets.UTF_8)
+                .toString();
+        return encrypted;
+    }
+
     private User GETAndGetSingleUser(String URL) {
+        System.out.println(URL);
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
         Invocation.Builder request = resource.request();
@@ -101,7 +114,7 @@ class UsersServletTest {
     @Test
     public void getUserById() {
         User user = GETAndGetSingleUser(serviceURL +
-                "?id=1"
+                "?id=1&controlValue=" + calculateControlValue()
         );
 
         System.out.println(user);
@@ -119,7 +132,8 @@ class UsersServletTest {
     @Test
     public void getUserByFullNameAndPassport() {
         User user = GETAndGetSingleUser(serviceURL +
-                "?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&passportNumber=1234567890"
+                "?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&passportNumber=1234567890" +
+                "&controlValue=" + calculateControlValue()
         );
 
         System.out.println(user);
@@ -137,7 +151,7 @@ class UsersServletTest {
     @Test
     public void getAllUsers(){
         List<User> users = GETAndGetMultipleUsers(
-                serviceURL + "?getAll=1"
+                serviceURL + "?getAll=1" + "&controlValue=" + calculateControlValue()
         );
         System.out.println(users);
 
@@ -147,7 +161,7 @@ class UsersServletTest {
     @Test
     public void getErrorWithoutParameters(){
         ErrorMessage errorMessage = GETAndGetError(
-                serviceURL
+                serviceURL + "?controlValue=" + calculateControlValue()
         );
 
         System.out.println(errorMessage);
@@ -159,7 +173,7 @@ class UsersServletTest {
     @Test
     public void getErrorNotEnoughParameters(){
         ErrorMessage errorMessage = GETAndGetError(
-                serviceURL + "?firstname=TESTUSER1"
+                serviceURL + "?firstname=TESTUSER1" + "&controlValue=" + calculateControlValue()
         );
 
         System.out.println(errorMessage);
@@ -171,7 +185,7 @@ class UsersServletTest {
     @Test
     public void getErrorBadId(){
         ErrorMessage errorMessage = GETAndGetError(
-                serviceURL + "?id=QWERTY"
+                serviceURL + "?id=QWERTY" + "&controlValue=" + calculateControlValue()
         );
 
         System.out.println(errorMessage);
@@ -190,7 +204,7 @@ class UsersServletTest {
 
         ErrorMessage errorMessage = POSTAndGetError(
                 testUser,
-                serviceURL
+                serviceURL + "?controlValue=" + calculateControlValue()
         );
 
         System.out.println(errorMessage);

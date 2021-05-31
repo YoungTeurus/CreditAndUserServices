@@ -2,6 +2,7 @@ package servlets;
 
 import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import config.Config;
@@ -18,6 +19,8 @@ import models.out.UserCredit;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,10 +35,16 @@ public class MainServlet extends BaseServlet {
         String passport = getRequestParameterValue("passportNumber");
         String driverID = getRequestParameterValue("driverID");
         String taxID = getRequestParameterValue("taxID");
-        return handle(firstname, surname, patronymic, passport, driverID, taxID);
+        String controlValue = getRequestParameterValue("controlValue");
+        return handle(firstname, surname, patronymic, passport, driverID, taxID, controlValue);
     }
 
-    private Object handle(String firstname, String surname, String patronymic, String passport, String driverID, String taxID) {
+    private Object handle(String firstname, String surname, String patronymic, String passport, String driverID, String taxID, String controlValue) {
+        boolean isOperationIllegal = ! checkIfOperationLegalUsingControlValueAndUserId(controlValue);
+        if (isOperationIllegal) {
+            return new ErrorMessage(HttpServletResponse.SC_FORBIDDEN,
+                    "Передано неверное контрольное значение: " + controlValue + ". Проверьте правильность данных и повторите запрос.");
+        }
         List<Object> result = new ArrayList<>();
         if (isFullNameCorrect(firstname, surname, patronymic)) {
             User user = getUserByIds(firstname, surname,patronymic, passport ,driverID, taxID);
@@ -58,6 +67,17 @@ public class MainServlet extends BaseServlet {
         }
     }
 
+    private boolean checkIfOperationLegalUsingControlValueAndUserId(String controlValue){
+        if (controlValue == null){
+            return false;
+        }
+        String code = Config.getSecurePhrase() + LocalDate.now();
+        String encrypted = Hashing.sha256()
+                .hashString(code, StandardCharsets.UTF_8)
+                .toString();
+        return controlValue.equals(encrypted);
+    }
+
     private User getUserByIds(String firstname, String surname, String patronymic, String passport, String driverID, String taxID) {
         User user = null;
         if (passport != null) {
@@ -75,21 +95,32 @@ public class MainServlet extends BaseServlet {
     }
 
     private User findByFullNameAndPassport(String firstname, String surname, String patronymic, String passport) {
+        String controlValue = calculateControlValue(Config.getUsersSecurePhrase());
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&passportNumber=" + passport);
+                + "&patronymic=" + patronymic + "&passportNumber=" + passport + "&controlValue=" + controlValue);
         return new Gson().fromJson(json, User.class);
     }
 
     private User findByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID) {
+        String controlValue = calculateControlValue(Config.getUsersSecurePhrase());
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&driverID=" + driverID);
+                + "&patronymic=" + patronymic + "&driverID=" + driverID + "&controlValue=" + controlValue);
         return new Gson().fromJson(json, User.class);
     }
 
     private User findByFullNameAndTaxId(String firstname, String surname, String patronymic, String taxID) {
+        String controlValue = calculateControlValue(Config.getUsersSecurePhrase());
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&taxID=" + taxID);
+                + "&patronymic=" + patronymic + "&taxID=" + taxID + "&controlValue=" + controlValue);
         return new Gson().fromJson(json, User.class);
+    }
+
+    private String calculateControlValue(String code) {
+        String value = code + LocalDate.now();
+        String encrypted = Hashing.sha256()
+                .hashString(code, StandardCharsets.UTF_8)
+                .toString();
+        return encrypted;
     }
 
     private boolean isFullNameCorrect(String firstname, String surname, String patronymic) {
@@ -97,8 +128,9 @@ public class MainServlet extends BaseServlet {
     }
 
     private List<Credit> getCreditInfoByUser(User user) {
+        String controlValue = calculateControlValue(Config.getCreditsSecurePhrase());
         Type listType = new TypeToken<ArrayList<Credit>>(){}.getType();
-        return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=1"), listType);
+        return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=" + controlValue), listType);
     }
 
     private String connectAndGet(String path) {

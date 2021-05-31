@@ -3,7 +3,9 @@ package servlet;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
+import config.Config;
 import modelconnectors.UserDatabaseConnector;
 import models.User;
 
@@ -12,7 +14,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @WebServlet(name="users", urlPatterns = "/")
@@ -32,8 +36,16 @@ public class UsersServlet extends BaseServlet {
 
         String getAll = getRequestParameterValue("getAll");
 
+        String controlValue = getRequestParameterValue("controlValue");
+
         Object result;
         try {
+            boolean isOperationIllegal = ! checkIfOperationLegalUsingControlValueAndUserId(controlValue);
+            if (isOperationIllegal) {
+                result = new ErrorMessage(HttpServletResponse.SC_FORBIDDEN,
+                        "Передано неверное контрольное значение: " + controlValue + ". Проверьте правильность данных и повторите запрос.");
+                return result;
+            }
             if(id != null){
                 result = getUserById(id);
             } else if (firstname != null && surname != null && patronymic != null && passportNumber != null){
@@ -56,6 +68,17 @@ public class UsersServlet extends BaseServlet {
                     "Не удалось подключиться к базе данных");
         }
         return result;
+    }
+
+    private boolean checkIfOperationLegalUsingControlValueAndUserId(String controlValue){
+        if (controlValue == null){
+            return false;
+        }
+        String code = Config.getSecurePhrase() + LocalDate.now();
+        String encrypted = Hashing.sha256()
+                .hashString(code, StandardCharsets.UTF_8)
+                .toString();
+        return controlValue.equals(encrypted);
     }
 
     private Object getUserById(String id) throws SQLException, DataBaseConnectionException {

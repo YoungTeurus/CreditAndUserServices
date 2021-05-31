@@ -15,6 +15,8 @@ public class Config {
     private String CreditServiceDBPass;
     private String port;
 
+    private String securePhrase;
+
     private Config() {
         if (instance == null) {
             instance = this;
@@ -33,6 +35,7 @@ public class Config {
                     writer.write("creditService.db.user = \n");
                     writer.write("creditService.db.password = \n");
                     writer.write("creditService.port = \n");
+                    writer.write("creditService.securePhrase = \n");
                     writer.flush();
                 }
                 throw new RuntimeException("Файла конфигурации не существовало, он был создан. Задайте значения");
@@ -43,6 +46,7 @@ public class Config {
             this.CreditServiceDBLogin = property.getProperty("creditService.db.user");
             this.CreditServiceDBPass = property.getProperty("creditService.db.password");
             this.port = property.getProperty("creditService.port");
+            this.securePhrase = property.getProperty("creditService.securePhrase");
 
         } catch (IOException e) {
             System.err.println("ОШИБКА: Файл свойств отсуствует! (Credits)");
@@ -74,6 +78,11 @@ public class Config {
     public static String getPort() {
         createInstanceIfNotCreated();
         return instance.port;
+    }
+
+    public static String getSecurePhrase() {
+        createInstanceIfNotCreated();
+        return instance.securePhrase;
     }
 
 }
