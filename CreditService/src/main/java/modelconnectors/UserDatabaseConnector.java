@@ -2,7 +2,7 @@ package modelconnectors;
 
 import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
-import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.CreditPostgresDataBase;
 import com.github.youngteurus.servletdatabase.database.constructor.DateParameter;
 import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
@@ -15,7 +15,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
+public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> {
     private UserDatabaseConnector(DataBase db){
         super(db);
     }
@@ -53,16 +53,6 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return params;
     }
 
-    @Override
-    protected final ResultSet getResultSetOfRemovedObjectId(long id) throws SQLException, DataBaseConnectionException {
-        // TODO: переписать код удаления сущности, если необходимо.
-        Connection connection = db.getConnection();
-        String sql = "DELETE FROM public.\"users\" WHERE id = ? RETURNING id;";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setLong(1, id);
-
-        return db.executeStatement(preparedStatement);
-    }
     @Override
     protected User constructObjectFromResultSet(ResultSet rs) {
         // Оторванность sql запроса и разбирания результа запроса для создания объекта напрягает.
@@ -132,5 +122,10 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
             // return null?
         }
         return returnSex;
+    }
+
+    @Override
+    protected List<Parameter> getParametersForRemove(User user) {
+        throw new UnsupportedOperationException();
     }
 }

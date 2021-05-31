@@ -3,7 +3,7 @@ package modelconnectors;
 import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
-import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.CreditPostgresDataBase;
 import models.Sex;
 
@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
+public class SexDatabaseConnector extends AbstractModelDatabaseConnector<Sex> {
     private SexDatabaseConnector(DataBase db){
         super(db);
     }
@@ -54,8 +54,7 @@ public class SexDatabaseConnector extends BaseDatabaseConnector<Sex> {
     }
 
     @Override
-    protected ResultSet getResultSetOfRemovedObjectId(long id) throws SQLException, DataBaseConnectionException {
+    protected List<Parameter> getParametersForRemove(Sex sex) {
         throw new UnsupportedOperationException();
     }
-
 }

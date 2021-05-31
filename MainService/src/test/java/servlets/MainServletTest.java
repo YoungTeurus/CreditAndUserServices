@@ -35,13 +35,29 @@ class MainServletTest {
 
     @Test
     public void getUserAndCreditsByFullNameAndPassport() {
-        User user = findByFullNameAndPassport("TESTUSER1", "TESTUSER1", "Отчество", "1234567890");
+        String requestedFirstname = "TESTUSER1";
+        String requestedSurname = "TESTUSER1";
+        String requestedPatronymic = "Отчество";
+        String requestedPassport = "1234567890";
+
+        System.out.println("Запрос по имени " + requestedFirstname + ", фамилии " + requestedSurname +
+                ", отчеству " + requestedPatronymic + ", пасспорту " + requestedPassport);
+        User user = findByFullNameAndPassport(requestedFirstname, requestedSurname, requestedPatronymic, requestedPassport);
         Assertions.assertNotNull(user);
+
+        System.out.println("Полученный пользователь: ");
+        System.out.println(user);
+
         Assertions.assertEquals(1, user.getId());
+
+        // Аналог ...?firstname=<...>&surname=<...>&patronymic=<...>&passportNumber=<...>
         List<Credit> creditList = getCreditInfoByUser(user);
         for (Credit credit : creditList) {
             Assertions.assertEquals(1, credit.getUserId());
         }
+
+        System.out.println("Полученные кредиты пользователя: ");
+        System.out.println(creditList);
     }
 
     @Test

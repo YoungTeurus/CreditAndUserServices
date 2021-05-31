@@ -6,7 +6,7 @@ import com.github.youngteurus.servletdatabase.database.constructor.BigDecimalPar
 import com.github.youngteurus.servletdatabase.database.constructor.DateParameter;
 import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
-import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.CreditPostgresDataBase;
 import models.Credit;
 
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit> {
+public class CreditDatabaseConnector extends AbstractModelDatabaseConnector<Credit> {
     private CreditDatabaseConnector(DataBase db){
         super(db);
     }
@@ -78,8 +78,7 @@ public class CreditDatabaseConnector extends BaseDatabaseConnector<Credit> {
     }
 
     @Override
-    protected ResultSet getResultSetOfRemovedObjectId(long id) throws SQLException, DataBaseConnectionException {
-        // Удалять записи о кредитах нельзя.
+    protected List<Parameter> getParametersForRemove(Credit credit) {
         throw new UnsupportedOperationException();
     }
 }

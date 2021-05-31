@@ -3,7 +3,7 @@ package modelconnectors;
 import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import com.github.youngteurus.servletdatabase.database.constructor.*;
-import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.CreditPostgresDataBase;
 import models.Payment;
 
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment> {
+public class PaymentDatabaseConnector extends AbstractModelDatabaseConnector<Payment> {
     private PaymentDatabaseConnector(DataBase db){
         super(db);
     }
@@ -73,8 +73,7 @@ public class PaymentDatabaseConnector extends BaseDatabaseConnector<Payment> {
     }
 
     @Override
-    protected ResultSet getResultSetOfRemovedObjectId(long id) throws SQLException, DataBaseConnectionException {
-        // Удалять записи о платежах нельзя.
+    protected List<Parameter> getParametersForRemove(Payment payment) {
         throw new UnsupportedOperationException();
     }
 }

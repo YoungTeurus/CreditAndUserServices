@@ -1,0 +1,4 @@
+GET http://localhost:8082/main?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&passportNumber=1234567890
+Accept: application/json
+
+###
