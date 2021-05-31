@@ -86,11 +86,11 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-
+        <!-- Наша кастомная библиотека https://github.com/YoungTeurus/DatabaseLibrary -->
         <dependency>
             <groupId>com.github.YoungTeurus</groupId>
             <artifactId>DatabaseLibrary</artifactId>
-            <version>f9492e2f11</version>
+            <version>12dfc3c6ea</version>
         </dependency>
     </dependencies>
 

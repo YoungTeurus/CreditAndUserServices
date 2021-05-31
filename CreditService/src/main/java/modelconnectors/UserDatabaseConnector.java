@@ -55,6 +55,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
 
     @Override
     protected final ResultSet getResultSetOfRemovedObjectId(long id) throws SQLException, DataBaseConnectionException {
+        // TODO: переписать код удаления сущности, если необходимо.
         Connection connection = db.getConnection();
         String sql = "DELETE FROM public.\"users\" WHERE id = ? RETURNING id;";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -66,7 +67,7 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     protected User constructObjectFromResultSet(ResultSet rs) {
         // Оторванность sql запроса и разбирания результа запроса для создания объекта напрягает.
         // Колонки, возвращаемые SQL запросом:
-        // id, firstname, birth_date, passport_number, sex_id, surname, tax_payer_id, driver_licence_id
+        // id, firstname, birth_date, passport_number, sex_id, surname, patronymic, tax_payer_id, driver_licence_id
         try {
             int userSexForeignKey = rs.getInt("sex_id");
             Sex usersSex = getSexById(userSexForeignKey);

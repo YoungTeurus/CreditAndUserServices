@@ -6,16 +6,21 @@ import com.github.youngteurus.servletdatabase.database.constructor.DateParameter
 import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.database.constructor.StringParameter;
-import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
+import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.UserPostgresDataBase;
 import models.Sex;
 import models.User;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
+public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> {
+    // private final ParentsDatabaseConnector parentsDatabaseConnector = ParentsDatabaseConnector.getInstance();
+    private final SexDatabaseConnector sexDatabaseConnector = SexDatabaseConnector.getInstance();
+    private static UserDatabaseConnector instance;
+
     private UserDatabaseConnector(DataBase db){
         super(db);
     }
@@ -25,12 +30,8 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         return "users";
     }
 
-    private final SexDatabaseConnector sexDatabaseConnector = SexDatabaseConnector.getInstance();
-    private static UserDatabaseConnector instance;
-
     public static UserDatabaseConnector getInstance() {
         if (instance == null) {
-            // TODO: временное решение проблемы с базами данных в UserServiceUserDatabaseConnector:
             DataBase db = UserPostgresDataBase.getInstance();
             instance = new UserDatabaseConnector(db);
         }
@@ -55,14 +56,11 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
     }
 
     @Override
-    protected final ResultSet getResultSetOfRemovedObjectId(long id) throws SQLException, DataBaseConnectionException {
-        Connection connection = db.getConnection();
-        String sql = "DELETE FROM public.\"users\" WHERE id = ? RETURNING id;";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setLong(1, id);
-
-        return db.executeStatement(preparedStatement);
+    protected List<Parameter> getParametersForRemove(User user) {
+        // TODO: реализовать метод для удаления User-ов из таблицы
+        throw new NotImplementedException();
     }
+
     @Override
     protected User constructObjectFromResultSet(ResultSet rs) {
         // Оторванность sql запроса и разбирания результа запроса для создания объекта напрягает.
@@ -148,6 +146,12 @@ public class UserDatabaseConnector extends BaseDatabaseConnector<User> {
         List<User> foundUsers = getByParameters(params);
 
         return foundUsers;
+    }
+
+    private List<User> getParentsById(long id){
+        // List<User> parents = parentsDatabaseConnector.getParentsById(id);
+
+        return null;
     }
 
     private Sex getSexById(int id){
