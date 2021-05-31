@@ -4,8 +4,8 @@ models\Credit$1.class
 config\Config.class
 models\Credit$Builder.class
 models\User.class
-models\User$Builder.class
-models\User$1.class
 servlets\MainServlet.class
 models\Payment.class
 models\Credit.class
+models\User$Builder.class
+models\User$1.class

@@ -2,8 +2,10 @@ package config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Config {
 
@@ -24,12 +26,19 @@ public class Config {
     private void load() {
         Properties property = new Properties();
         try {
-            // Для тестов, иначе не находит
-            if (!new File("UserService/src/main/resources/UserService.properties").exists()) {
-                property.load(new FileInputStream("../UserService/src/main/resources/UserService.properties"));
-            } else {
-                property.load(new FileInputStream("UserService/src/main/resources/UserService.properties"));
+            if (!new File("UserService.properties").exists()) {
+                File file = new File("UserService.properties");
+                file.createNewFile();
+                try(FileWriter writer = new FileWriter(file)) {
+                    writer.write("userService.db.host = \n");
+                    writer.write("userService.db.user = \n");
+                    writer.write("userService.db.password = \n");
+                    writer.write("userService.port = \n");
+                    writer.flush();
+                }
+                throw new RuntimeException("Файла конфигурации не существовало, он был создан. Задайте значения");
             }
+            property.load(new FileInputStream("UserService.properties"));
 
             this.UserServiceDBHost = property.getProperty("userService.db.host");
             this.UserServiceDBLogin = property.getProperty("userService.db.user");

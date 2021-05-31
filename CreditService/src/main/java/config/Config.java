@@ -2,6 +2,7 @@ package config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -24,12 +25,19 @@ public class Config {
     private void load() {
         Properties property = new Properties();
         try {
-            // Для тестов, иначе не находит
-            if (!new File("CreditService/src/main/resources/CreditService.properties").exists()) {
-                property.load(new FileInputStream("../CreditService/src/main/resources/CreditService.properties"));
-            } else {
-                property.load(new FileInputStream("CreditService/src/main/resources/CreditService.properties"));
+            if (!new File("CreditService.properties").exists()) {
+                File file = new File("CreditService.properties");
+                file.createNewFile();
+                try(FileWriter writer = new FileWriter(file)) {
+                    writer.write("creditService.db.host = \n");
+                    writer.write("creditService.db.user = \n");
+                    writer.write("creditService.db.password = \n");
+                    writer.write("creditService.port = \n");
+                    writer.flush();
+                }
+                throw new RuntimeException("Файла конфигурации не существовало, он был создан. Задайте значения");
             }
+            property.load(new FileInputStream("CreditService.properties"));
 
             this.CreditServiceDBHost = property.getProperty("creditService.db.host");
             this.CreditServiceDBLogin = property.getProperty("creditService.db.user");
