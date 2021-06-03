@@ -55,7 +55,9 @@ public class UsersServlet extends BaseServlet {
                         "Передано неверное контрольное значение: " + controlValue + ". Проверьте правильность данных и повторите запрос.");
                 return result;
             }
-
+            if (getAll != null && getAll.equals("1")) {
+                return getAllUsers();
+            }
             if(id != null){
                 result = getUserById(id);
             } else if (isFIOPresent) {
@@ -65,20 +67,17 @@ public class UsersServlet extends BaseServlet {
                     result = getUserByFullNameAndDriverID(firstname, surname, patronymic, driverID);
                 } else if (taxID != null) {
                     result = getUserByFullNameAndTaxID(firstname, surname, patronymic, taxID);
-                } else if (getAll != null && getAll.equals("1")) {
-                    result = getAllUsers();
                 } else {
                     result = new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                             "Запрос не содержал уточняющего параметра для поиска пользователя: номера паспорта или водительского удостоверения или ИНН. Проверьте правильность данных и повторите запрос.");
+                    return result;
                 }
             } else {
                 result = new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                         "Запрос не содержал значимых параметров или был неполным. Проверьте правильность данных и повторите запрос.");
+                return result;
             }
-
-            // TODO: можно ли здесь избавиться от instanceof ?
-            if (result instanceof User && needToFindRelatives){
-                // result всегда будет содержать User, если он был найден в предыдущих методах.
+            if (needToFindRelatives){
                 result = getUserAndRelatives((User)result);
             }
         } catch (SQLException throwables) {
