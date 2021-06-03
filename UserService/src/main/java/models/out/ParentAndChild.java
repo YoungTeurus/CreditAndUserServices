@@ -1,19 +1,19 @@
 package models.out;
 
 public class ParentAndChild {
-    int parentId;
-    int childId;
+    long parentId;
+    long childId;
 
     public ParentAndChild(int parentId, int childId) {
         this.parentId = parentId;
         this.childId = childId;
     }
 
-    public int getParentId() {
+    public long getParentId() {
         return parentId;
     }
 
-    public int getChildId() {
+    public long getChildId() {
         return childId;
     }
 

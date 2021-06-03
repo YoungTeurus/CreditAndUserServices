@@ -52,8 +52,8 @@ public class ParentsDatabaseConnector extends BaseDatabaseConnector<ParentAndChi
     protected List<Parameter> getParametersForInsert(ParentAndChild parentAndChild) {
         List<Parameter> params = new ArrayList<>();
 
-        params.add(new IntegerParameter("parentId", parentAndChild.getParentId()));
-        params.add(new IntegerParameter("childId", parentAndChild.getChildId()));
+        params.add(new LongParameter("parentId", parentAndChild.getParentId()));
+        params.add(new LongParameter("childId", parentAndChild.getChildId()));
 
         return params;
     }
@@ -63,8 +63,8 @@ public class ParentsDatabaseConnector extends BaseDatabaseConnector<ParentAndChi
         return getParametersForInsert(parentAndChild);
     }
 
-    public List<Integer> getChildrenIDsOfUser(int id) throws SQLException, DataBaseConnectionException {
-        List<Integer> childIDs = new ArrayList<>();
+    public List<Long> getChildrenIDsOfUser(int id) throws SQLException, DataBaseConnectionException {
+        List<Long> childIDs = new ArrayList<>();
 
         List<Parameter> params = new ArrayList<>();
 
@@ -73,15 +73,15 @@ public class ParentsDatabaseConnector extends BaseDatabaseConnector<ParentAndChi
         List<ParentAndChild> parentAndChildList = getByParameters(params);
 
         for(ParentAndChild parentAndChild : parentAndChildList){
-            int idOfChild = parentAndChild.getChildId();
+            long idOfChild = parentAndChild.getChildId();
             childIDs.add(idOfChild);
         }
 
         return childIDs;
     }
 
-    public List<Integer> getParentsIDsOfUser(int id) throws SQLException, DataBaseConnectionException {
-        List<Integer> parentsIDs = new ArrayList<>();
+    public List<Long> getParentsIDsOfUser(int id) throws SQLException, DataBaseConnectionException {
+        List<Long> parentsIDs = new ArrayList<>();
 
         List<Parameter> params = new ArrayList<>();
 
@@ -90,7 +90,7 @@ public class ParentsDatabaseConnector extends BaseDatabaseConnector<ParentAndChi
         List<ParentAndChild> parentAndChildList = getByParameters(params);
 
         for(ParentAndChild parentAndChild : parentAndChildList){
-            int idOfParent = parentAndChild.getParentId();
+            long idOfParent = parentAndChild.getParentId();
             parentsIDs.add(idOfParent);
         }
 
