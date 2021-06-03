@@ -8,6 +8,7 @@ import com.github.youngteurus.servletdatabase.database.constructor.LongParameter
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.CreditPostgresDataBase;
+import models.Branch;
 import models.Credit;
 
 import java.sql.Date;
@@ -30,7 +31,6 @@ public class CreditDatabaseConnector extends AbstractModelDatabaseConnector<Cred
 
     public static CreditDatabaseConnector getInstance() {
         if (instance == null) {
-            // TODO: временное решение проблемы с базами данных в CreditDatabaseConnector:
             DataBase db = CreditPostgresDataBase.getInstance();
             instance = new CreditDatabaseConnector(db);
         }
@@ -40,17 +40,21 @@ public class CreditDatabaseConnector extends AbstractModelDatabaseConnector<Cred
     @Override
     protected Credit constructObjectFromResultSet(ResultSet rs) {
         // Колонки, возвращаемые SQL запросом:
-        // id, userId, totalSum, startPaying, endPaying
+        // id, userId, totalSum, startPaying, endPaying, branchId
         Credit returnCredit = null;
         try {
+            long branchId = rs.getLong("branchId");
+            Branch branch = BranchDatabaseConnector.getInstance().getById(branchId);
+
             returnCredit = new Credit.Builder()
                     .id(rs.getLong("id"))
                     .userId(rs.getLong("userId"))
                     .totalSum(rs.getBigDecimal("totalSum"))
                     .startPaymentDate(rs.getDate("startPaying").toLocalDate())
                     .endPaymentDate(rs.getDate("endPaying").toLocalDate())
+                    .branch(branch)
                     .build();
-        } catch (SQLException e) {
+        } catch (SQLException | DataBaseConnectionException e) {
             e.printStackTrace();
         }
         return returnCredit;

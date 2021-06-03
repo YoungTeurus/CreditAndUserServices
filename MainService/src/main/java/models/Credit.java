@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class Credit extends AbstractModel {
     private final long id;
     private final long userId;
-    private final long branchId;
+    private final MainServiceBranch branch;
     private final BigDecimal totalSum;
     private final LocalDate startPaymentDate;
     private final LocalDate endPaymentDate;
@@ -16,7 +16,7 @@ public class Credit extends AbstractModel {
     public static class Builder {
         private long id = 0;
         private long userId = 0;
-        private long branchId = 0;
+        private MainServiceBranch branch;
         private BigDecimal totalSum = new BigDecimal("0.0");
         private LocalDate startPaymentDate = LocalDate.now();
         private LocalDate endPaymentDate = LocalDate.now();
@@ -31,8 +31,8 @@ public class Credit extends AbstractModel {
             return this;
         }
 
-        public Builder branchId(long branchId) {
-            this.branchId = branchId;
+        public Builder branch(MainServiceBranch branch) {
+            this.branch = branch;
             return this;
         }
 
@@ -59,7 +59,7 @@ public class Credit extends AbstractModel {
     private Credit(Builder builder) {
         this.id = builder.id;
         this.userId = builder.userId;
-        this.branchId = builder.branchId;
+        this.branch = builder.branch;
         this.totalSum = builder.totalSum;
         this.startPaymentDate = builder.startPaymentDate;
         this.endPaymentDate = builder.endPaymentDate;
@@ -69,8 +69,8 @@ public class Credit extends AbstractModel {
         return userId;
     }
 
-    public long getBranchId() {
-        return branchId;
+    public MainServiceBranch getBranch() {
+        return branch;
     }
 
     public BigDecimal getTotalSum() {
@@ -95,7 +95,7 @@ public class Credit extends AbstractModel {
         return "Credit{" +
                 "id=" + id +
                 ", userId=" + userId +
-                ", branchId=" + branchId +
+                ", branch=" + branch +
                 ", totalSum=" + totalSum +
                 ", startPaymentDate=" + startPaymentDate +
                 ", endPaymentDate=" + endPaymentDate +

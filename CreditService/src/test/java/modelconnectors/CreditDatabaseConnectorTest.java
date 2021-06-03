@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 class CreditDatabaseConnectorTest {
-    private CreditDatabaseConnector cdc = CreditDatabaseConnector.getInstance();
+    private final CreditDatabaseConnector cdc = CreditDatabaseConnector.getInstance();
 
     @Test
     void getCreditsByUserId() throws SQLException, DataBaseConnectionException {

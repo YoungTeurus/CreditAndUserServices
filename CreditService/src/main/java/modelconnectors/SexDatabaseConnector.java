@@ -12,8 +12,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class SexDatabaseConnector extends AbstractModelDatabaseConnector<Sex> {
+    private static SexDatabaseConnector instance;
+
     private SexDatabaseConnector(DataBase db){
         super(db);
+    }
+
+    public static SexDatabaseConnector getInstance() {
+        if (instance == null) {
+            DataBase db = CreditPostgresDataBase.getInstance();
+            instance = new SexDatabaseConnector(db);
+        }
+        return instance;
     }
 
     @Override
@@ -21,16 +31,6 @@ public class SexDatabaseConnector extends AbstractModelDatabaseConnector<Sex> {
         return "sexes";
     }
 
-    private static SexDatabaseConnector instance;
-
-    public static SexDatabaseConnector getInstance() {
-        if (instance == null) {
-            // TODO: временное решение проблемы с базами данных в SexDatabaseConnector:
-            DataBase db = CreditPostgresDataBase.getInstance();
-            instance = new SexDatabaseConnector(db);
-        }
-        return instance;
-    }
 
     @Override
     protected Sex constructObjectFromResultSet(ResultSet rs) {
