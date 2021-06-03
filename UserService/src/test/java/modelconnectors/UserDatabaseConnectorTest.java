@@ -4,7 +4,6 @@ import com.github.youngteurus.servletdatabase.database.DataBaseConnectionExcepti
 import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.database.constructor.StringParameter;
-import modelconnectors.UserDatabaseConnector;
 import models.User;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class UserDatabaseConnectorTest {
     private final Random random = new Random();

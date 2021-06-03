@@ -1,6 +1,5 @@
 package models.out;
 
-import models.Credit;
 import models.User;
 
 import java.util.List;

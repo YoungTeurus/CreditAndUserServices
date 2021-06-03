@@ -5,10 +5,10 @@ import com.github.youngteurus.servletdatabase.models.AbstractModel;
 import java.time.LocalDate;
 
 public class Payment extends AbstractModel {
-    private long id;
-    private long creditId;
-    private double sum;
-    private LocalDate date;
+    private final long id;
+    private final long creditId;
+    private final double sum;
+    private final LocalDate date;
 
     public Payment(long id, long creditId, double sum, LocalDate date) {
         this.id = id;

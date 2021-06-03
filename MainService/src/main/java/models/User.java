@@ -17,7 +17,6 @@ public class User extends AbstractModel {
     private final String driverLicenceId;
 
     public static class Builder {
-        // Дефолтные поля
         private final String firstname;
         private long id = 0;
         private long creditServiceId = 0;

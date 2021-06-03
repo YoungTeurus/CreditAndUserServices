@@ -76,9 +76,7 @@ public class CreditDatabaseConnector extends AbstractModelDatabaseConnector<Cred
         List<Parameter> params = new ArrayList<>();
         params.add(new LongParameter("userId", userId));
 
-        List<Credit> foundCredits = getByParameters(params);
-
-        return foundCredits;
+        return getByParameters(params);
     }
 
     @Override

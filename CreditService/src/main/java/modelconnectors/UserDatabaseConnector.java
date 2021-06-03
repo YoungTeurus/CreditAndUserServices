@@ -2,16 +2,18 @@ package modelconnectors;
 
 import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
-import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
-import database.CreditPostgresDataBase;
 import com.github.youngteurus.servletdatabase.database.constructor.DateParameter;
 import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.database.constructor.StringParameter;
+import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
+import database.CreditPostgresDataBase;
 import models.Sex;
 import models.User;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,9 +75,6 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
                     .driverLicenceId(rs.getString("driver_licence_id")).build();
             return user;
         } catch (SQLException e){
-            // TODO: решить, как обрабатывать ошибку при невозможности создать user из полученных данных.
-            // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
-            e.printStackTrace();
             return null;
         }
     }
@@ -97,9 +96,7 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("firstname", firstname));
 
-        List<User> foundUsers = getByParameters(params);
-
-        return foundUsers;
+        return getByParameters(params);
     }
 
     public final List<User> getByFirstnameSurnameAndPassport(String firstname, String surname, String passportNumber) throws SQLException, DataBaseConnectionException {
@@ -108,18 +105,14 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
         params.add(new StringParameter("surname", surname));
         params.add(new StringParameter("passport_number", passportNumber));
 
-        List<User> foundUsers = getByParameters(params);
-
-        return foundUsers;
+        return getByParameters(params);
     }
 
     private Sex getSexById(int id){
         Sex returnSex = null;
         try {
             returnSex = sexDatabaseConnector.getById(id);
-        } catch (SQLException | DataBaseConnectionException e){
-            // TODO: что делать, если не смогли получить пол?
-            // return null?
+        } catch (SQLException | DataBaseConnectionException ignored){
         }
         return returnSex;
     }

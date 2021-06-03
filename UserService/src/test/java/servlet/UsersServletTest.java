@@ -186,6 +186,8 @@ class UsersServletTest {
 
     @Test
     public void getAllUsers(){
+        System.out.println("HEY");
+        System.out.println(serviceURL + "?getAll=1" + "&controlValue=" + calculateControlValue());
         List<User> users = GETAndGetMultipleUsers(
                 serviceURL + "?getAll=1" + "&controlValue=" + calculateControlValue()
         );

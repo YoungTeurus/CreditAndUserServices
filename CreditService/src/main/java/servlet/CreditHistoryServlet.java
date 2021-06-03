@@ -1,14 +1,13 @@
 package servlet;
 
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
+import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import com.github.youngteurus.servletdatabase.servlets.BaseServlet;
 import com.google.common.hash.Hashing;
 import config.Config;
 import modelconnectors.CreditDatabaseConnector;
 import modelconnectors.PaymentDatabaseConnector;
-import modelconnectors.UserDatabaseConnector;
 import models.Credit;
-import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
 import models.Payment;
 import models.out.CreditAndPayments;
 
@@ -25,7 +24,6 @@ import java.util.List;
 
 @WebServlet(name="credits", urlPatterns = "/")
 public class CreditHistoryServlet extends BaseServlet {
-    private final UserDatabaseConnector usersRepos = UserDatabaseConnector.getInstance();
     private final CreditDatabaseConnector creditRepos = CreditDatabaseConnector.getInstance();
     private final PaymentDatabaseConnector paymentRepos = PaymentDatabaseConnector.getInstance();
 

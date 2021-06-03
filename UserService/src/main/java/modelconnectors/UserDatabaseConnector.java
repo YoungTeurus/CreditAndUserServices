@@ -12,12 +12,13 @@ import models.Sex;
 import models.User;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> {
-    // private final ParentsDatabaseConnector parentsDatabaseConnector = ParentsDatabaseConnector.getInstance();
     private final SexDatabaseConnector sexDatabaseConnector = SexDatabaseConnector.getInstance();
     private static UserDatabaseConnector instance;
 
@@ -107,9 +108,7 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
         List<Parameter> params = new ArrayList<>();
         params.add(new StringParameter("firstname", firstname));
 
-        List<User> foundUsers = getByParameters(params);
-
-        return foundUsers;
+        return getByParameters(params);
     }
 
     public final List<User> getByFullNameAndPassport(String firstname, String surname, String patronymic, String passportNumber) throws SQLException, DataBaseConnectionException {
@@ -119,9 +118,7 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
         params.add(new StringParameter("patronymic", patronymic));
         params.add(new StringParameter("passport_number", passportNumber));
 
-        List<User> foundUsers = getByParameters(params);
-
-        return foundUsers;
+        return getByParameters(params);
     }
 
     public final List<User> getByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID) throws SQLException, DataBaseConnectionException {
@@ -131,9 +128,7 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
         params.add(new StringParameter("patronymic", patronymic));
         params.add(new StringParameter("driver_licence_id", driverID));
 
-        List<User> foundUsers = getByParameters(params);
-
-        return foundUsers;
+        return getByParameters(params);
     }
 
     public final List<User> getByFullNameAndTaxID(String firstname, String surname, String patronymic, String taxID) throws SQLException, DataBaseConnectionException {
@@ -143,9 +138,7 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
         params.add(new StringParameter("patronymic", patronymic));
         params.add(new StringParameter("tax_payer_id", taxID));
 
-        List<User> foundUsers = getByParameters(params);
-
-        return foundUsers;
+        return getByParameters(params);
     }
 
     public final List<User> getByIds(List<Long> ids) throws SQLException, DataBaseConnectionException {

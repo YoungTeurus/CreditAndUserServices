@@ -2,7 +2,10 @@ package modelconnectors;
 
 import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
-import com.github.youngteurus.servletdatabase.database.constructor.*;
+import com.github.youngteurus.servletdatabase.database.constructor.BigDecimalParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.DateParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.CreditPostgresDataBase;
 import models.Payment;
@@ -67,9 +70,7 @@ public class PaymentDatabaseConnector extends AbstractModelDatabaseConnector<Pay
         List<Parameter> params = new ArrayList<>();
         params.add(new LongParameter("creditId", creditId));
 
-        List<Payment> foundPayments = getByParameters(params);
-
-        return foundPayments;
+        return getByParameters(params);
     }
 
     @Override

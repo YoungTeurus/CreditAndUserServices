@@ -9,8 +9,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SimpleConsoleTests {
     private final UserDatabaseConnector udc = UserDatabaseConnector.getInstance();
     private final User testUser = new User.Builder("TEST_USER").driverLicenceId("1111").build();

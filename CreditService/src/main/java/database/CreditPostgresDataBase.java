@@ -1,10 +1,7 @@
 package database;
 
 import com.github.youngteurus.servletdatabase.database.BasePostgresDataBase;
-import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import config.Config;
-
-import java.sql.*;
 
 public class CreditPostgresDataBase extends BasePostgresDataBase {
     private static CreditPostgresDataBase instance;

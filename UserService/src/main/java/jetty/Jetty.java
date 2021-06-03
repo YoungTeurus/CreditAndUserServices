@@ -12,10 +12,8 @@ public class Jetty {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
         server.setHandler(context);
-        // Expose our example servlet.
         context.addServlet(new ServletHolder(new UsersServlet()), "/user");
 
-        // Start the webserver.
         server.start();
         server.join();
     }

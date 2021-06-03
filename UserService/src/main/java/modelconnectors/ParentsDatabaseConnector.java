@@ -2,13 +2,12 @@ package modelconnectors;
 
 import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
-import com.github.youngteurus.servletdatabase.database.constructor.*;
+import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
+import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.modelconnectors.BaseDatabaseConnector;
 import database.UserPostgresDataBase;
-import models.User;
 import models.out.ParentAndChild;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

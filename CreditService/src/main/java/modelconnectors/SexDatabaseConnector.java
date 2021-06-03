@@ -1,7 +1,6 @@
 package modelconnectors;
 
 import com.github.youngteurus.servletdatabase.database.DataBase;
-import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.modelconnectors.AbstractModelDatabaseConnector;
 import database.CreditPostgresDataBase;

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class PaymentDatabaseConnectorTest {
     private final PaymentDatabaseConnector pdc = PaymentDatabaseConnector.getInstance();

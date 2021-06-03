@@ -42,10 +42,7 @@ public class SexDatabaseConnector extends AbstractModelDatabaseConnector<Sex> {
                     rs.getLong("id"),
                     rs.getString("name")
             );
-        } catch (SQLException e) {
-            // TODO: решить, как обрабатывать ошибку при невозможности создать sex из полученных данных.
-            // Либо слать ошибку дальше по стеку вызовов, либо возвращать null.
-            e.printStackTrace();
+        } catch (SQLException ignored) {
         }
         return returnSex;
     }

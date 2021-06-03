@@ -3,10 +3,11 @@ package modelconnectors;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import models.Credit;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class CreditDatabaseConnectorTest {
     private final CreditDatabaseConnector cdc = CreditDatabaseConnector.getInstance();
