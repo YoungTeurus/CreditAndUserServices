@@ -1,8 +1,8 @@
 package models.out;
 
 public class ParentAndChild {
-    long parentId;
-    long childId;
+    private final long parentId;
+    private final long childId;
 
     public ParentAndChild(int parentId, int childId) {
         this.parentId = parentId;
