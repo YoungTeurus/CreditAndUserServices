@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import jetty.Jetty;
 import models.Credit;
 import models.User;
+import models.out.MainUserAndRelatives;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -83,6 +84,21 @@ class MainServletTest {
     }
 
     @Test
+    public void getUserAndRelativesAndCreditsByFullNameAndDriverId(){
+        MainUserAndRelatives userAndRelatives = findUserAndRelativesByFullNameAndDriverId("TESTUSER1", "TESTUSER1", "Отчество", "QWERTY-12");
+        User user = userAndRelatives.getUser();
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals(1, user.getId());
+        List<Credit> creditList = getCreditInfoByUser(user);
+        for (Credit credit : creditList) {
+            Assertions.assertEquals(1, credit.getUserId());
+        }
+
+        System.out.println(userAndRelatives);
+        System.out.println(creditList);
+    }
+
+    @Test
     public void getUserAndCreditsByFullNameAndTaxId() {
         User user = findByFullNameAndTaxId("TESTUSER1", "TESTUSER1", "Отчество", "123456789012");
         Assertions.assertNotNull(user);
@@ -108,6 +124,14 @@ class MainServletTest {
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
                 + "&patronymic=" + patronymic + "&driverID=" + driverID + "&controlValue=" + calculateControlValue(Config.getUsersSecurePhrase()));
         return new Gson().fromJson(json, User.class);
+    }
+
+    private MainUserAndRelatives findUserAndRelativesByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID){
+        String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
+                + "&patronymic=" + patronymic + "&driverID=" + driverID + "&controlValue=" + calculateControlValue(Config.getUsersSecurePhrase())
+                + "&findRelatives=1"
+        );
+        return new Gson().fromJson(json, MainUserAndRelatives.class);
     }
 
     private User findByFullNameAndTaxId(String firstname, String surname, String patronymic, String taxID) {

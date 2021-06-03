@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import models.Credit;
 import models.User;
+import models.out.MainUserAndRelatives;
 import models.out.UserCredit;
 
 import javax.servlet.annotation.WebServlet;
@@ -47,8 +48,9 @@ public class MainServlet extends BaseServlet {
         }
         List<Object> result = new ArrayList<>();
         if (isFullNameCorrect(firstname, surname, patronymic)) {
-            User user = getUserByIds(firstname, surname,patronymic, passport ,driverID, taxID);
-            result.add(user);
+            MainUserAndRelatives userAndRelatives = getUserAndRelativesByIds(firstname, surname,patronymic, passport ,driverID, taxID);
+            User user = userAndRelatives.getUser();
+            result.add(userAndRelatives);
             if (user != null) {
                 System.out.println(user);
                 List<Credit> credit = getCreditInfoByUser(user);
@@ -78,41 +80,47 @@ public class MainServlet extends BaseServlet {
         return controlValue.equals(encrypted);
     }
 
-    private User getUserByIds(String firstname, String surname, String patronymic, String passport, String driverID, String taxID) {
-        User user = null;
+    private MainUserAndRelatives getUserAndRelativesByIds(String firstname, String surname, String patronymic, String passport, String driverID, String taxID){
+        MainUserAndRelatives userAndRelatives = null;
         if (passport != null) {
-            user = findByFullNameAndPassport(firstname,surname,patronymic,passport);
+            userAndRelatives = findByFullNameAndPassport(firstname,surname,patronymic,passport);
         }
-        if (user == null) {
+        if (userAndRelatives == null) {
             if (driverID != null) {
-                user = findByFullNameAndDriverId(firstname,surname,patronymic,driverID);
+                userAndRelatives = findByFullNameAndDriverId(firstname,surname,patronymic,driverID);
             }
         }
-        if (user == null) {
-            user = findByFullNameAndTaxId(firstname,surname,patronymic,taxID);
+        if (userAndRelatives == null) {
+            userAndRelatives = findByFullNameAndTaxId(firstname,surname,patronymic,taxID);
         }
-        return user;
+        return userAndRelatives;
     }
 
-    private User findByFullNameAndPassport(String firstname, String surname, String patronymic, String passport) {
+    private MainUserAndRelatives findByFullNameAndPassport(String firstname, String surname, String patronymic, String passport) {
         String controlValue = calculateControlValue(Config.getUsersSecurePhrase());
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&passportNumber=" + passport + "&controlValue=" + controlValue);
-        return new Gson().fromJson(json, User.class);
+                + "&patronymic=" + patronymic + "&passportNumber=" + passport + "&controlValue=" + controlValue
+                + "&findRelatives=1"
+        );
+        return new Gson().fromJson(json, MainUserAndRelatives.class);
     }
 
-    private User findByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID) {
+    private MainUserAndRelatives findByFullNameAndDriverId(String firstname, String surname, String patronymic, String driverID) {
         String controlValue = calculateControlValue(Config.getUsersSecurePhrase());
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&driverID=" + driverID + "&controlValue=" + controlValue);
-        return new Gson().fromJson(json, User.class);
+                + "&patronymic=" + patronymic + "&driverID=" + driverID + "&controlValue=" + controlValue
+                + "&findRelatives=1"
+        );
+        return new Gson().fromJson(json, MainUserAndRelatives.class);
     }
 
-    private User findByFullNameAndTaxId(String firstname, String surname, String patronymic, String taxID) {
+    private MainUserAndRelatives findByFullNameAndTaxId(String firstname, String surname, String patronymic, String taxID) {
         String controlValue = calculateControlValue(Config.getUsersSecurePhrase());
         String json = connectAndGet(Config.getUsersURL() + "?firstname=" + firstname + "&surname=" + surname
-                + "&patronymic=" + patronymic + "&taxID=" + taxID + "&controlValue=" + controlValue);
-        return new Gson().fromJson(json, User.class);
+                + "&patronymic=" + patronymic + "&taxID=" + taxID + "&controlValue=" + controlValue
+                + "&findRelatives=1"
+        );
+        return new Gson().fromJson(json, MainUserAndRelatives.class);
     }
 
     private String calculateControlValue(String code) {
