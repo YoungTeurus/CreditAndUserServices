@@ -1,4 +1,4 @@
-GET http://localhost:8082/main?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&passportNumber=1234567890&findRelatives=1
+GET http://localhost:8082/main?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&passportNumber=1234567890&findRelatives=1&controlValue=07a136faaef4688e36af29af2805ad9b821feb503d013728883bf4e4dd2e10a2
 Accept: application/json
 
 ###

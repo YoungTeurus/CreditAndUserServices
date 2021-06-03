@@ -42,7 +42,7 @@ public class MainServlet extends BaseServlet {
     }
 
     private Object handle(String firstname, String surname, String patronymic, String passport, String driverID, String taxID, String controlValue) {
-        boolean isOperationIllegal = ! checkIfOperationLegalUsingControlValueAndUserId(controlValue);
+        boolean isOperationIllegal = ! checkIfOperationLegalUsingControlValue(controlValue);
         if (isOperationIllegal) {
             return new ErrorMessage(HttpServletResponse.SC_FORBIDDEN,
                     "Передано неверное контрольное значение: " + controlValue + ". Проверьте правильность данных и повторите запрос.");
@@ -70,7 +70,7 @@ public class MainServlet extends BaseServlet {
         }
     }
 
-    private boolean checkIfOperationLegalUsingControlValueAndUserId(String controlValue){
+    private boolean checkIfOperationLegalUsingControlValue(String controlValue){
         if (controlValue == null){
             return false;
         }
@@ -78,6 +78,7 @@ public class MainServlet extends BaseServlet {
         String encrypted = Hashing.sha256()
                 .hashString(code, StandardCharsets.UTF_8)
                 .toString();
+        System.out.println(encrypted);
         return controlValue.equals(encrypted);
     }
 
