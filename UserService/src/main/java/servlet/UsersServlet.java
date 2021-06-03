@@ -29,6 +29,7 @@ public class UsersServlet extends BaseServlet {
 
     @Override
     protected Object processParameters() {
+
         String id = getRequestParameterValue("id");
 
         String firstname = getRequestParameterValue("firstname");

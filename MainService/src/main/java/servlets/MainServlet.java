@@ -127,7 +127,7 @@ public class MainServlet extends BaseServlet {
     private String calculateControlValue(String code) {
         String value = code + LocalDate.now();
         String encrypted = Hashing.sha256()
-                .hashString(code, StandardCharsets.UTF_8)
+                .hashString(value, StandardCharsets.UTF_8)
                 .toString();
         return encrypted;
     }
