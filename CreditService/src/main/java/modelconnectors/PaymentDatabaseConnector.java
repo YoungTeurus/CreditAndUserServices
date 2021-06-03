@@ -63,7 +63,7 @@ public class PaymentDatabaseConnector extends AbstractModelDatabaseConnector<Pay
         return params;
     }
 
-    public List<Payment> getByCreditId(int creditId) throws SQLException, DataBaseConnectionException {
+    public List<Payment> getByCreditId(long creditId) throws SQLException, DataBaseConnectionException {
         List<Parameter> params = new ArrayList<>();
         params.add(new LongParameter("creditId", creditId));
 

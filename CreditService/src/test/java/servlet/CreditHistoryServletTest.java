@@ -14,6 +14,7 @@ import jetty.Jetty;
 import models.Credit;
 import models.Payment;
 import models.User;
+import models.out.CreditAndPayments;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +51,7 @@ class CreditHistoryServletTest {
         return encrypted;
     }
 
-    private User connectAndGetUser(String URL){
+    private List<CreditAndPayments> connectAndGetArrayListOfCreditsAndPayments(String URL){
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target(URL);
         Invocation.Builder request = resource.request();
@@ -59,46 +60,18 @@ class CreditHistoryServletTest {
         response.bufferEntity();
         String json = response.readEntity(String.class);
 
-        Type listType = new TypeToken<ArrayList<User>>(){}.getType();
-
-        return new Gson().fromJson(json, listType);
-    }
-
-    private List<Credit> connectAndGetArrayListOfCredits(String URL) {
-        Client client = ClientBuilder.newClient();
-        WebTarget resource = client.target(URL);
-        Invocation.Builder request = resource.request();
-        request.accept(MediaType.APPLICATION_JSON);
-        Response response = request.get();
-        response.bufferEntity();
-        String json = response.readEntity(String.class);
-
-        Type listType = new TypeToken<ArrayList<Credit>>(){}.getType();
-
-        return new Gson().fromJson(json, listType);
-    }
-
-    private List<Payment> connectAndGetArrayListOfPayments(String URL) {
-        Client client = ClientBuilder.newClient();
-        WebTarget resource = client.target(URL);
-        Invocation.Builder request = resource.request();
-        request.accept(MediaType.APPLICATION_JSON);
-        Response response = request.get();
-        response.bufferEntity();
-        String json = response.readEntity(String.class);
-
-        Type listType = new TypeToken<ArrayList<Payment>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<CreditAndPayments>>(){}.getType();
 
         return new Gson().fromJson(json, listType);
     }
 
     @Test
     void getCreditsByUserId() {
-        List<Credit> credits = connectAndGetArrayListOfCredits(
+        List<CreditAndPayments> creditsAndPayments = connectAndGetArrayListOfCreditsAndPayments(
                 serviceURL + "?userId=1" + "&controlValue=" + calculateControlValue()
         );
 
-        System.out.println(credits);
-        assertNotEquals(0, credits.size());
+        System.out.println(creditsAndPayments);
+        assertNotEquals(0, creditsAndPayments.size());
     }
 }

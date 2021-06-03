@@ -9,6 +9,8 @@ import modelconnectors.PaymentDatabaseConnector;
 import modelconnectors.UserDatabaseConnector;
 import models.Credit;
 import com.github.youngteurus.servletdatabase.models.error.ErrorMessage;
+import models.Payment;
+import models.out.CreditAndPayments;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name="credits", urlPatterns = "/")
@@ -80,9 +83,16 @@ public class CreditHistoryServlet extends BaseServlet {
 
         List<Credit> credits = creditRepos.getByUserId(parsedUserId);
 
-        // TODO: придумать, как возвращать credits + payments в одном объекте
+        List<CreditAndPayments> creditsAndPayments = new ArrayList<>();
 
-        return credits;
+        for(Credit credit : credits){
+            long creditId = credit.getId();
+            List<Payment> creditPayments = paymentRepos.getByCreditId(creditId);
+            CreditAndPayments creditAndPayments = new CreditAndPayments(credit, creditPayments);
+            creditsAndPayments.add(creditAndPayments);
+        }
+
+        return creditsAndPayments;
     }
 
     @Override
