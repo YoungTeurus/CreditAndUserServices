@@ -229,7 +229,7 @@ class UsersServletTest {
         System.out.println(errorMessage);
 
         assertNotNull(errorMessage);
-        assertEquals(HttpServletResponse.SC_BAD_REQUEST, errorMessage.getError());
+        assertEquals(HttpServletResponse.SC_NOT_FOUND, errorMessage.getError());
     }
 
     @Test

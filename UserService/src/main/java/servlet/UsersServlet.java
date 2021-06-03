@@ -60,13 +60,29 @@ public class UsersServlet extends BaseServlet {
             }
             if(id != null){
                 result = getUserById(id);
+                if (result == null) {
+                    return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                            "Пользователь с данным ID не найден");
+                }
             } else if (isFIOPresent) {
                 if (passportNumber != null) {
                     result = getUserByFullNameAndPassport(firstname, surname, patronymic, passportNumber);
+                    if (result == null) {
+                        return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                                "Пользователь с заданным именем, фамилией и пасспортными данными не найден.");
+                    }
                 } else if (driverID != null) {
                     result = getUserByFullNameAndDriverID(firstname, surname, patronymic, driverID);
+                    if (result == null) {
+                        return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                                "Пользователь с заданным именем, фамилией и водительским не найден.");
+                    }
                 } else if (taxID != null) {
                     result = getUserByFullNameAndTaxID(firstname, surname, patronymic, taxID);
+                    if (result == null) {
+                        return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
+                                "Пользователь с заданным именем, фамилией и ИНН не найден.");
+                    }
                 } else {
                     result = new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
                             "Запрос не содержал уточняющего параметра для поиска пользователя: номера паспорта или водительского удостоверения или ИНН. Проверьте правильность данных и повторите запрос.");
@@ -101,28 +117,19 @@ public class UsersServlet extends BaseServlet {
         return controlValue.equals(encrypted);
     }
 
-    private Object getUserById(String id) throws SQLException, DataBaseConnectionException {
-        int parsedId;
-
+    private User getUserById(String id) throws SQLException, DataBaseConnectionException {
+        int parsedId = -1;
         try {
             parsedId = Integer.parseInt(id);
         } catch (NumberFormatException ignored){
-            return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST,
-                    "Параметр 'id' содержал неверные данные. Проверьте правильность данных и повторите запрос.");
         }
-        User user = userRepos.getById(parsedId);
-        if (user == null) {
-            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                    "Пользователь с данным ID не найден");
-        }
-        return user;
+        return userRepos.getById(parsedId);
     }
 
-    private Object getUserByFullNameAndPassport(String firstname, String surname, String patronymic, String passportNumber) throws SQLException, DataBaseConnectionException {
+    private User getUserByFullNameAndPassport(String firstname, String surname, String patronymic, String passportNumber) throws SQLException, DataBaseConnectionException {
         List<User> users = userRepos.getByFullNameAndPassport(firstname, surname, patronymic, passportNumber);
         if (users.isEmpty()) {
-            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                    "Пользователь с заданным именем, фамилией и пасспортными данными не найден.");
+            return null;
         }
         // TODO: возможность того, что найденных пользователей окажется больше 1-го всё-ещё сохраняется.
         //  Возможно всё-таки стоит возвращать список всех пользователей, запрашивая у пользователя уточнение по ID.
@@ -149,29 +156,27 @@ public class UsersServlet extends BaseServlet {
         return userAndRelatives;
     }
 
-    private Object getUserByFullNameAndDriverID(String firstname, String surname, String patronymic, String driverId) throws SQLException, DataBaseConnectionException {
+    private User getUserByFullNameAndDriverID(String firstname, String surname, String patronymic, String driverId) throws SQLException, DataBaseConnectionException {
         List<User> users = userRepos.getByFullNameAndDriverId(firstname, surname, patronymic, driverId);
         if (users.isEmpty()) {
-            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                    "Пользователь с заданным именем, фамилией и водительским не найден.");
+            return null;
         }
         // TODO: возможность того, что найденных пользователей окажется больше 1-го всё-ещё сохраняется.
         //  Возможно всё-таки стоит возвращать список всех пользователей, запрашивая у пользователя уточнение по ID.
         return users.get(0);
     }
 
-    private Object getUserByFullNameAndTaxID(String firstname, String surname, String patronymic, String taxID) throws SQLException, DataBaseConnectionException {
+    private User getUserByFullNameAndTaxID(String firstname, String surname, String patronymic, String taxID) throws SQLException, DataBaseConnectionException {
         List<User> users = userRepos.getByFullNameAndTaxID(firstname, surname, patronymic, taxID);
         if (users.isEmpty()) {
-            return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND,
-                    "Пользователь с заданным именем, фамилией и ИНН не найден.");
+            return null;
         }
         // TODO: возможность того, что найденных пользователей окажется больше 1-го всё-ещё сохраняется.
         //  Возможно всё-таки стоит возвращать список всех пользователей, запрашивая у пользователя уточнение по ID.
         return users.get(0);
     }
 
-    private Object getAllUsers() throws SQLException, DataBaseConnectionException {
+    private List<User> getAllUsers() throws SQLException, DataBaseConnectionException {
         List<User> users = userRepos.getAll();
         return users;
     }
