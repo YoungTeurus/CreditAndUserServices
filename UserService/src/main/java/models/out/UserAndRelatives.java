@@ -32,4 +32,14 @@ public class UserAndRelatives {
     public List<User> getSiblings() {
         return siblings;
     }
+
+    @Override
+    public String toString() {
+        return "UserAndRelatives{" +
+                "user=" + user +
+                ", parents=" + parents +
+                ", children=" + children +
+                ", siblings=" + siblings +
+                '}';
+    }
 }

@@ -148,10 +148,15 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
         return foundUsers;
     }
 
-    private List<User> getParentsById(long id){
-        // List<User> parents = parentsDatabaseConnector.getParentsById(id);
+    public final List<User> getByIds(List<Long> ids) throws SQLException, DataBaseConnectionException {
+        List<User> users = new ArrayList<>();
 
-        return null;
+        for(long id : ids){
+            User currentUser = getById(id);
+            users.add(currentUser);
+        }
+
+        return users;
     }
 
     private Sex getSexById(int id){

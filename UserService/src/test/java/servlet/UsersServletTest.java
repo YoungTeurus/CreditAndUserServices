@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jetty.Jetty;
 import models.User;
+import models.out.UserAndRelatives;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +58,21 @@ class UsersServletTest {
         String json = response.readEntity(String.class);
 
         Type userType = new TypeToken<User>(){}.getType();
+
+        return new Gson().fromJson(json, userType);
+    }
+
+    private UserAndRelatives GETAndGetUserAndRelatives(String URL){
+        System.out.println(URL);
+        Client client = ClientBuilder.newClient();
+        WebTarget resource = client.target(URL);
+        Invocation.Builder request = resource.request();
+        request.accept(MediaType.APPLICATION_JSON);
+        Response response = request.get();
+        response.bufferEntity();
+        String json = response.readEntity(String.class);
+
+        Type userType = new TypeToken<UserAndRelatives>(){}.getType();
 
         return new Gson().fromJson(json, userType);
     }
@@ -118,6 +134,26 @@ class UsersServletTest {
         );
 
         System.out.println(user);
+
+        assertEquals(1, user.getId());
+        assertEquals(LocalDate.of(2021,5,30), user.getBirthDate());
+        assertEquals("TESTUSER1", user.getFirstname());
+        assertEquals("TESTUSER1", user.getSurname());
+        assertEquals("QWERTY-12", user.getDriverLicenceId());
+        assertEquals("1234567890", user.getPassportNumber());
+        assertEquals("123456789012", user.getTaxPayerID());
+        assertEquals(1, user.getSex().getId());
+    }
+
+    @Test
+    public void getUserAndRelativesById(){
+        UserAndRelatives userAndRelatives = GETAndGetUserAndRelatives(serviceURL +
+                "?id=1&findRelatives=1&controlValue=" + calculateControlValue()
+        );
+
+        System.out.println(userAndRelatives);
+
+        User user = userAndRelatives.getUser();
 
         assertEquals(1, user.getId());
         assertEquals(LocalDate.of(2021,5,30), user.getBirthDate());
