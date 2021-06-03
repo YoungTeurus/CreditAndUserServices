@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import jetty.Jetty;
 import models.Credit;
 import models.User;
+import models.out.CreditAndPayments;
 import models.out.MainUserAndRelatives;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -63,13 +64,14 @@ class MainServletTest {
         Assertions.assertEquals(1, user.getId());
 
         // Аналог ...?firstname=<...>&surname=<...>&patronymic=<...>&passportNumber=<...>
-        List<Credit> creditList = getCreditInfoByUser(user);
-        for (Credit credit : creditList) {
+        List<CreditAndPayments> creditAndPaymentsList = getCreditInfoByUser(user);
+        for (CreditAndPayments creditAndPayments : creditAndPaymentsList) {
+            Credit credit = creditAndPayments.getCredit();
             Assertions.assertEquals(1, credit.getUserId());
         }
 
         System.out.println("Полученные кредиты пользователя: ");
-        System.out.println(creditList);
+        System.out.println(creditAndPaymentsList);
     }
 
     @Test
@@ -77,8 +79,9 @@ class MainServletTest {
         User user = findByFullNameAndDriverId("TESTUSER1", "TESTUSER1", "Отчество", "QWERTY-12");
         Assertions.assertNotNull(user);
         Assertions.assertEquals(1, user.getId());
-        List<Credit> creditList = getCreditInfoByUser(user);
-        for (Credit credit : creditList) {
+        List<CreditAndPayments> creditAndPaymentsList = getCreditInfoByUser(user);
+        for (CreditAndPayments creditAndPayments : creditAndPaymentsList) {
+            Credit credit = creditAndPayments.getCredit();
             Assertions.assertEquals(1, credit.getUserId());
         }
     }
@@ -89,13 +92,14 @@ class MainServletTest {
         User user = userAndRelatives.getUser();
         Assertions.assertNotNull(user);
         Assertions.assertEquals(1, user.getId());
-        List<Credit> creditList = getCreditInfoByUser(user);
-        for (Credit credit : creditList) {
+        List<CreditAndPayments> creditAndPaymentsList = getCreditInfoByUser(user);
+        for (CreditAndPayments creditAndPayments : creditAndPaymentsList) {
+            Credit credit = creditAndPayments.getCredit();
             Assertions.assertEquals(1, credit.getUserId());
         }
 
         System.out.println(userAndRelatives);
-        System.out.println(creditList);
+        System.out.println(creditAndPaymentsList);
     }
 
     @Test
@@ -103,14 +107,15 @@ class MainServletTest {
         User user = findByFullNameAndTaxId("TESTUSER1", "TESTUSER1", "Отчество", "123456789012");
         Assertions.assertNotNull(user);
         Assertions.assertEquals(1, user.getId());
-        List<Credit> creditList = getCreditInfoByUser(user);
-        for (Credit credit : creditList) {
+        List<CreditAndPayments> creditAndPaymentsList = getCreditInfoByUser(user);
+        for (CreditAndPayments creditAndPayments : creditAndPaymentsList) {
+            Credit credit = creditAndPayments.getCredit();
             Assertions.assertEquals(1, credit.getUserId());
         }
     }
 
-    private List<Credit> getCreditInfoByUser(User user) {
-        Type listType = new TypeToken<ArrayList<Credit>>(){}.getType();
+    private List<CreditAndPayments> getCreditInfoByUser(User user) {
+        Type listType = new TypeToken<ArrayList<CreditAndPayments>>(){}.getType();
         return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=" + calculateControlValue(Config.getCreditsSecurePhrase()) ), listType);
     }
 

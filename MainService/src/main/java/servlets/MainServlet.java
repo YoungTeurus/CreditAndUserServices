@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import models.Credit;
 import models.User;
+import models.out.CreditAndPayments;
 import models.out.MainUserAndRelatives;
 import models.out.UserCredit;
 
@@ -53,12 +54,12 @@ public class MainServlet extends BaseServlet {
             result.add(userAndRelatives);
             if (user != null) {
                 System.out.println(user);
-                List<Credit> credit = getCreditInfoByUser(user);
-                System.out.println(credit);
-                if (credit == null) {
+                List<CreditAndPayments> creditAndPayments = getCreditInfoByUser(user);
+                System.out.println(creditAndPayments);
+                if (creditAndPayments == null) {
                     result.add(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь не найден в сервисе кредитных историй."));
                 } else {
-                    return new UserCredit(user, credit);
+                    return new UserCredit(user, creditAndPayments);
                 }
                 return result;
             } else {
@@ -135,9 +136,9 @@ public class MainServlet extends BaseServlet {
         return firstname != null && surname != null && patronymic != null;
     }
 
-    private List<Credit> getCreditInfoByUser(User user) {
+    private List<CreditAndPayments> getCreditInfoByUser(User user) {
         String controlValue = calculateControlValue(Config.getCreditsSecurePhrase());
-        Type listType = new TypeToken<ArrayList<Credit>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<CreditAndPayments>>(){}.getType();
         return new Gson().fromJson(connectAndGet(Config.getCreditsURL() + "?userId=" + user.getCreditServiceId() + "&controlValue=" + controlValue), listType);
     }
 

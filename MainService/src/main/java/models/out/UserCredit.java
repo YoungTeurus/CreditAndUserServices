@@ -7,14 +7,14 @@ import java.util.List;
 
 public class UserCredit {
     private final User user;
-    private final List<Credit> credits;
+    private final List<CreditAndPayments> credits;
 
-    public UserCredit(User user, List<Credit> credits) {
+    public UserCredit(User user, List<CreditAndPayments> credits) {
         this.user = user;
         this.credits = credits;
     }
 
-    public List<Credit> getCredits() {
+    public List<CreditAndPayments> getCredits() {
         return credits;
     }
 
