@@ -1,4 +1,4 @@
-package modelconnector;
+package modelconnectors;
 
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import com.github.youngteurus.servletdatabase.database.constructor.LongParameter;
