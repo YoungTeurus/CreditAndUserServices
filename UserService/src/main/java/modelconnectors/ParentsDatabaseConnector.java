@@ -63,12 +63,12 @@ public class ParentsDatabaseConnector extends BaseDatabaseConnector<ParentAndChi
         return getParametersForInsert(parentAndChild);
     }
 
-    public List<Long> getChildrenIDsOfUser(int id) throws SQLException, DataBaseConnectionException {
+    public List<Long> getChildrenIDsOfUser(long id) throws SQLException, DataBaseConnectionException {
         List<Long> childIDs = new ArrayList<>();
 
         List<Parameter> params = new ArrayList<>();
 
-        params.add(new IntegerParameter("parentId", id));
+        params.add(new LongParameter("parentId", id));
 
         List<ParentAndChild> parentAndChildList = getByParameters(params);
 
@@ -80,12 +80,12 @@ public class ParentsDatabaseConnector extends BaseDatabaseConnector<ParentAndChi
         return childIDs;
     }
 
-    public List<Long> getParentsIDsOfUser(int id) throws SQLException, DataBaseConnectionException {
+    public List<Long> getParentsIDsOfUser(long id) throws SQLException, DataBaseConnectionException {
         List<Long> parentsIDs = new ArrayList<>();
 
         List<Parameter> params = new ArrayList<>();
 
-        params.add(new IntegerParameter("childId", id));
+        params.add(new LongParameter("childId", id));
 
         List<ParentAndChild> parentAndChildList = getByParameters(params);
 
