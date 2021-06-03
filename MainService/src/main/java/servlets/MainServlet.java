@@ -12,7 +12,6 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import models.Credit;
 import models.User;
 import models.out.CreditAndPayments;
 import models.out.MainUserAndRelatives;
@@ -48,7 +47,7 @@ public class MainServlet extends BaseServlet {
                     "Передано неверное контрольное значение: " + controlValue + ". Проверьте правильность данных и повторите запрос.");
         }
         List<Object> result = new ArrayList<>();
-        if (isFullNameCorrect(firstname, surname, patronymic)) {
+        if (isFullNameCorrect(firstname, surname, patronymic) && isAdditionalInfoWasSent(passport, driverID, taxID)) {
             MainUserAndRelatives userAndRelatives = getUserAndRelativesByIds(firstname, surname,patronymic, passport ,driverID, taxID);
             User user = userAndRelatives.getUser();
             result.add(userAndRelatives);
@@ -63,10 +62,10 @@ public class MainServlet extends BaseServlet {
                 }
                 return result;
             } else {
-                return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь с данными индификационными данными не найден.");
+                return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь с данными индификационными данными не найден. userAndRelatives = " + userAndRelatives);
             }
         } else {
-            return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST, "Не указано ФИО.");
+            return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST, "Не указано ФИО или одно из значений, уточняющих поиск пользователя.");
         }
     }
 
@@ -78,6 +77,7 @@ public class MainServlet extends BaseServlet {
         String encrypted = Hashing.sha256()
                 .hashString(code, StandardCharsets.UTF_8)
                 .toString();
+
         return controlValue.equals(encrypted);
     }
 
@@ -127,13 +127,17 @@ public class MainServlet extends BaseServlet {
     private String calculateControlValue(String code) {
         String value = code + LocalDate.now();
         String encrypted = Hashing.sha256()
-                .hashString(code, StandardCharsets.UTF_8)
+                .hashString(value, StandardCharsets.UTF_8)
                 .toString();
         return encrypted;
     }
 
     private boolean isFullNameCorrect(String firstname, String surname, String patronymic) {
         return firstname != null && surname != null && patronymic != null;
+    }
+
+    private boolean isAdditionalInfoWasSent(String passport, String driverID, String taxID){
+        return passport != null || driverID != null || taxID != null;
     }
 
     private List<CreditAndPayments> getCreditInfoByUser(User user) {
