@@ -47,6 +47,12 @@ class MainServletTest {
     }
 
     @Test
+    public void getControlValue(){
+        String controlValue = calculateControlValue(Config.getSecurePhrase());
+        System.out.println(controlValue);
+    }
+
+    @Test
     public void getUserAndCreditsByFullNameAndPassport() {
         String requestedFirstname = "TESTUSER1";
         String requestedSurname = "TESTUSER1";

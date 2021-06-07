@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.Response;
 import models.User;
 import models.out.CreditAndPayments;
 import models.out.MainUserAndRelatives;
-import models.out.UserCredit;
+import models.out.UserAndRelativesAndCreditsAndPayments;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +58,7 @@ public class MainServlet extends BaseServlet {
                 if (creditAndPayments == null) {
                     result.add(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь не найден в сервисе кредитных историй."));
                 } else {
-                    return new UserCredit(user, creditAndPayments);
+                    return new UserAndRelativesAndCreditsAndPayments(userAndRelatives, creditAndPayments);
                 }
                 return result;
             } else {

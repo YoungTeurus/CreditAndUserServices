@@ -1,9 +1,9 @@
-GET http://localhost:8082/main?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Patronymic&driverID=QWERTY-12&findRelatives=1&controlValue=07a136faaef4688e36af29af2805ad9b821feb503d013728883bf4e4dd2e10a2
+GET http://localhost:8082/main?firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&driverID=QWERTY-12&controlValue=9b07a6ac327e8dd7d948ffe65b4bfe853c916a0c93b4b1b37b8660311e70c725
 Accept: application/json
 
 ###
 
-GET http://localhost:8082/main?controlValue=07a136faaef4688e36af29af2805ad9b821feb503d013728883bf4e4dd2e10a2&firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&driverID=QWERTY-12
+GET http://localhost:8082/main?controlValue=9b07a6ac327e8dd7d948ffe65b4bfe853c916a0c93b4b1b37b8660311e70c725&firstname=TESTUSER1&surname=TESTUSER1&patronymic=Отчество&driverID=QWERTY-12
 Accept: application/json
 
 ##
