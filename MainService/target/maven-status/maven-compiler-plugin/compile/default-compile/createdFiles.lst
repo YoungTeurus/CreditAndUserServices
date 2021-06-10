@@ -7,5 +7,6 @@ models\User.class
 servlets\MainServlet.class
 models\Payment.class
 models\Credit.class
+models\out\UserAndRelativesAndCreditsAndPayments.class
 models\User$Builder.class
 models\User$1.class
