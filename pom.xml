@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.github.YoungTeurus</groupId>
             <artifactId>DatabaseLibrary</artifactId>
-            <version>774cc8c932</version>
+            <version>bd2f337eb9</version>
         </dependency>
     </dependencies>
 
