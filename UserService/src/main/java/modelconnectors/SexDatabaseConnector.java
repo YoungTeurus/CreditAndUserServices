@@ -25,7 +25,6 @@ public class SexDatabaseConnector extends AbstractModelDatabaseConnector<Sex> {
 
     public static SexDatabaseConnector getInstance() {
         if (instance == null) {
-            // TODO: временное решение проблемы с базами данных в SexDatabaseConnector:
             DataBase db = UserPostgresDataBase.getInstance();
             instance = new SexDatabaseConnector(db);
         }

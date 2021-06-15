@@ -64,7 +64,6 @@ public class UserDatabaseConnector extends AbstractModelDatabaseConnector<User> 
 
     @Override
     protected User constructObjectFromResultSet(ResultSet rs) {
-        // Оторванность sql запроса и разбирания результа запроса для создания объекта напрягает.
         // Колонки, возвращаемые SQL запросом:
         // id, firstname, birth_date, passport_number, sex_id, surname, tax_payer_id, driver_licence_id, creditServiceId
         try {
