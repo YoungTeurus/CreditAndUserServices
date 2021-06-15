@@ -95,4 +95,16 @@ public class ParentsDatabaseConnector extends BaseDatabaseConnector<ParentAndChi
 
         return parentsIDs;
     }
+
+    public List<Long> getSiblingsByParentIdAndUserId(long parentId, long userId) throws SQLException, DataBaseConnectionException {
+        List<Long> siblingsIDs;
+
+        List<Long> allChildrenOfParent = getChildrenIDsOfUser(parentId);
+
+        allChildrenOfParent.remove(userId);
+
+        siblingsIDs = allChildrenOfParent;
+
+        return siblingsIDs;
+    }
 }

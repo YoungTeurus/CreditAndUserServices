@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name="users", urlPatterns = "/")
@@ -145,12 +145,21 @@ public class UsersServlet extends BaseServlet {
         List<User> userParents = userRepos.getByIds(userParentsIDs);
         List<User> userChildren = userRepos.getByIds(userChildrenIDs);
 
+        List<User> userSiblings = new ArrayList<>();
+
+        if (userParents.size() > 0){
+            List<Long> userSiblingsIDs = parentsRepos.getSiblingsByParentIdAndUserId(userParentsIDs.get(0), userId);
+            for(Long siblingId : userSiblingsIDs){
+                User sibling = userRepos.getById(siblingId);
+                userSiblings.add( sibling );
+            }
+        }
+
         UserAndRelatives userAndRelatives = new UserAndRelatives(
                 user,
                 userParents,
                 userChildren,
-                // TODO: возвращать братьев и сестёр:
-                Collections.emptyList()
+                userSiblings
         );
 
         return userAndRelatives;
