@@ -52,9 +52,7 @@ public class MainServlet extends BaseServlet {
             User user = userAndRelatives.getUser();
             result.add(userAndRelatives);
             if (user != null) {
-                System.out.println(user);
                 List<CreditAndPayments> creditAndPayments = getCreditInfoByUser(user);
-                System.out.println(creditAndPayments);
                 if (creditAndPayments == null) {
                     result.add(new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь не найден в сервисе кредитных историй."));
                 } else {
@@ -62,7 +60,7 @@ public class MainServlet extends BaseServlet {
                 }
                 return result;
             } else {
-                return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь с данными индификационными данными не найден. userAndRelatives = " + userAndRelatives);
+                return new ErrorMessage(HttpServletResponse.SC_NOT_FOUND, "Пользователь с данными индификационными данными не найден.");
             }
         } else {
             return new ErrorMessage(HttpServletResponse.SC_BAD_REQUEST, "Не указано ФИО или одно из значений, уточняющих поиск пользователя.");
